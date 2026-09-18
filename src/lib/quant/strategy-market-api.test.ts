@@ -69,7 +69,7 @@ describe('strategy market transport', () => {
   });
 
   it('retains administrator authorization and control payloads across the new client boundary', async () => {
-    vi.stubEnv('QUANTPILOT_MARKET_ADMIN_TOKEN', 'unit-fixture-admin');
+    vi.stubEnv('SIGNALFOUNDRY_MARKET_ADMIN_TOKEN', 'unit-fixture-admin');
     const fetcher = vi
       .fn<typeof fetch>()
       .mockResolvedValue(Response.json({ job_id: 'job/1', action: 'pause', status: 'paused' }));

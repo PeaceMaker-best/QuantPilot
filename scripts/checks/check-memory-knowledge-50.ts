@@ -73,8 +73,8 @@ interface CaseResult {
 }
 
 const argv = process.argv.slice(2);
-const EXPECTED_DATASET = 'quantpilot-memory-knowledge-acceptance-50-v1';
-const DEFAULT_SUBJECT = 'quantpilot-acceptance-50-v1';
+const EXPECTED_DATASET = 'signalfoundry-memory-knowledge-acceptance-50-v1';
+const DEFAULT_SUBJECT = 'signalfoundry-acceptance-50-v1';
 
 function option(name: string): string | null {
   const prefix = `--${name}=`;
@@ -135,11 +135,11 @@ async function verifyModel(): Promise<void> {
     headers: { Authorization: `Bearer ${apiKey}` },
     signal: AbortSignal.timeout(5_000),
   });
-  assert(response.ok, `ModelPort model discovery returned HTTP ${response.status}.`);
+  assert(response.ok, `AetherGateway model discovery returned HTTP ${response.status}.`);
   const payload = record(await response.json());
   assert(
     Array.isArray(payload.data) && payload.data.some((item) => record(item).id === config.model),
-    `ModelPort does not advertise ${config.model}.`,
+    `AetherGateway does not advertise ${config.model}.`,
   );
 }
 
@@ -394,8 +394,8 @@ async function runCase(input: {
       `模型引用必须属于当前 ContextPack，且至少一条来自本题 record ${input.item.recordId}`
       + `（${citationIds.join('、') || '无'}）。`,
     );
-    if (structured.turn.finishReason === 'tool_calls' && structured.turn.usage) checks.push('modelport_tool_usage');
-    else failures.push(`ModelPort 工具协议或 Usage 异常（finish=${structured.turn.finishReason ?? 'none'}）。`);
+    if (structured.turn.finishReason === 'tool_calls' && structured.turn.usage) checks.push('aethergateway_tool_usage');
+    else failures.push(`AetherGateway 工具协议或 Usage 异常（finish=${structured.turn.finishReason ?? 'none'}）。`);
     Object.assign(modelEvidence, {
       model: structured.turn.responseModel,
       finishReason: structured.turn.finishReason,
@@ -440,7 +440,7 @@ async function runCase(input: {
         taskCategory: 'memory-knowledge-50-acceptance',
         eventId: `acceptance-50-knowledge-feedback-${input.item.id.toLowerCase()}-${input.runId}`,
         outcome: 'helped',
-        acceptedReceiptId: `urn:quantpilot:acceptance-50:${input.runId}:${input.item.id}`,
+        acceptedReceiptId: `urn:signalfoundry:acceptance-50:${input.runId}:${input.item.id}`,
         acceptedReceiptSha256: sha256(`accepted:${input.runId}:${input.item.id}`),
         observedAt: occurredAt,
       }, { config: knowledgeConfig });

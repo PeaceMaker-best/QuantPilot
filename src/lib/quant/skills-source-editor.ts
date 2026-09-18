@@ -784,7 +784,7 @@ export function createSkillSourceEditor(ROOT: string) {
           ? currentPackagePath
           : null;
     const workDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), "quantpilot-skill-diff-"),
+      path.join(os.tmpdir(), "signalfoundry-skill-diff-"),
     );
     const sourceDir = path.join(SKILLS_DIR, skillId);
 

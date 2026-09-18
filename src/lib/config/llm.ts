@@ -4,7 +4,7 @@ import {
   DEEPSEEK_OFFICIAL_BASE_URL,
   LOCAL_OPENAI_BASE_URL,
   LOCAL_QWEN_MODEL_ID,
-  MODELPORT_DEEPSEEK_MODEL_ID,
+  AETHERGATEWAY_DEEPSEEK_MODEL_ID,
   PI_AGENT_DEFAULT_MODEL,
   normalizePiAgentModelId,
   type PiAgentModelId,
@@ -16,7 +16,7 @@ export interface ProjectLlmConfig {
   provider: 'deepseek' | 'openai';
   model: PiAgentModelId;
   baseUrl: typeof DEEPSEEK_OFFICIAL_BASE_URL | typeof LOCAL_OPENAI_BASE_URL;
-  credentialEnv: 'DEEPSEEK_API_KEY' | 'MODELPORT_API_KEY';
+  credentialEnv: 'DEEPSEEK_API_KEY' | 'AETHERGATEWAY_API_KEY';
   agent: {
     enabled: boolean;
   };
@@ -70,13 +70,13 @@ const LOCKED_PROFILES = {
     provider: 'openai',
     model: LOCAL_QWEN_MODEL_ID,
     baseUrl: LOCAL_OPENAI_BASE_URL,
-    credentialEnv: 'MODELPORT_API_KEY',
+    credentialEnv: 'AETHERGATEWAY_API_KEY',
   },
-  [MODELPORT_DEEPSEEK_MODEL_ID]: {
+  [AETHERGATEWAY_DEEPSEEK_MODEL_ID]: {
     provider: 'openai',
-    model: MODELPORT_DEEPSEEK_MODEL_ID,
+    model: AETHERGATEWAY_DEEPSEEK_MODEL_ID,
     baseUrl: LOCAL_OPENAI_BASE_URL,
-    credentialEnv: 'MODELPORT_API_KEY',
+    credentialEnv: 'AETHERGATEWAY_API_KEY',
   },
 } as const;
 
@@ -123,23 +123,23 @@ export function getProjectLlmConfig(requestedModel?: string | null): ProjectLlmC
     credentialEnv: profile.credentialEnv as ProjectLlmConfig['credentialEnv'],
     agent: {
       enabled: envFlag(
-        'QUANTPILOT_LLM_AGENT_ENABLED',
+        'SIGNALFOUNDRY_LLM_AGENT_ENABLED',
         typeof agent?.enabled === 'boolean' ? agent.enabled : true,
       ),
     },
     queryRewrite: {
       enabled: envFlag(
-        'QUANTPILOT_LLM_QUERY_REWRITE_ENABLED',
+        'SIGNALFOUNDRY_LLM_QUERY_REWRITE_ENABLED',
         typeof rewrite?.enabled === 'boolean' ? rewrite.enabled : true,
       ),
       timeoutMs: boundedInteger(
-        process.env.QUANTPILOT_QUERY_REWRITE_LLM_TIMEOUT_MS,
+        process.env.SIGNALFOUNDRY_QUERY_REWRITE_LLM_TIMEOUT_MS,
         defaultTimeoutMs,
         500,
         15_000,
       ),
       maxRetries: boundedInteger(
-        process.env.QUANTPILOT_QUERY_REWRITE_LLM_MAX_RETRIES,
+        process.env.SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_RETRIES,
         defaultMaxRetries,
         0,
         1,

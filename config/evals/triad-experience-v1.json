@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "modelport-memory-knowledge-triad-v1",
-  "description": "ModelPort、evolvable-user-memory 与 agent-knowledge-platform 的 30 题真实联合体验集。",
+  "id": "aethergateway-memory-knowledge-triad-v1",
+  "description": "AetherGateway、evolvable-user-memory 与 agent-knowledge-platform 的 30 题真实联合体验集。",
   "cases": [
     {
       "id": "Q01",
@@ -144,8 +144,8 @@
     {
       "id": "K06",
       "category": "knowledge",
-      "question": "Qwen 和 DeepSeek 分别怎样经 ModelPort 接入，密钥应该由谁管理？",
-      "expected": { "title": "ModelPort 模型接入边界", "behavior": "feedback_idempotency" }
+      "question": "Qwen 和 DeepSeek 分别怎样经 AetherGateway 接入，密钥应该由谁管理？",
+      "expected": { "title": "AetherGateway 模型接入边界", "behavior": "feedback_idempotency" }
     },
     {
       "id": "T01",

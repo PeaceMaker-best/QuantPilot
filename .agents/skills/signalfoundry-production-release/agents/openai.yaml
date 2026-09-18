@@ -1,0 +1,4 @@
+interface:
+  display_name: "SignalFoundry Production Release"
+  short_description: "Safely release SignalFoundry without routine full data sync"
+  default_prompt: "Use $signalfoundry-production-release to plan and execute a safe feature-focused production release."

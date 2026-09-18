@@ -1,12 +1,12 @@
 export const DEEPSEEK_MODEL_ID = 'deepseek-v4-flash' as const;
 export const DEEPSEEK_OFFICIAL_BASE_URL = 'https://api.deepseek.com' as const;
-export const MODELPORT_DEEPSEEK_MODEL_ID = 'deepseek:deepseek-v4-flash' as const;
+export const AETHERGATEWAY_DEEPSEEK_MODEL_ID = 'deepseek:deepseek-v4-flash' as const;
 export const LOCAL_QWEN_MODEL_ID = 'local_qwen:qwen3.5-9b-q5km' as const;
 export const LOCAL_OPENAI_BASE_URL = 'http://127.0.0.1:38082/v1' as const;
 
 export type PiAgentModelId =
   | typeof DEEPSEEK_MODEL_ID
-  | typeof MODELPORT_DEEPSEEK_MODEL_ID
+  | typeof AETHERGATEWAY_DEEPSEEK_MODEL_ID
   | typeof LOCAL_QWEN_MODEL_ID;
 
 export interface PiAgentModelDefinition {
@@ -15,7 +15,7 @@ export interface PiAgentModelDefinition {
   description: string;
   supportsImages: boolean;
   provider: 'deepseek' | 'openai';
-  runtime: 'deepseek-official' | 'modelport';
+  runtime: 'deepseek-official' | 'aethergateway';
   external: false;
   aliases: string[];
 }
@@ -27,7 +27,7 @@ export const PI_AGENT_MODEL_DEFINITIONS: PiAgentModelDefinition[] = [
     description: '通过本机 OpenAI-compatible API 接入的默认 Qwen 3.5 9B 量化模型',
     supportsImages: false,
     provider: 'openai',
-    runtime: 'modelport',
+    runtime: 'aethergateway',
     external: false,
     aliases: [
       LOCAL_QWEN_MODEL_ID,
@@ -37,17 +37,17 @@ export const PI_AGENT_MODEL_DEFINITIONS: PiAgentModelDefinition[] = [
     ],
   },
   {
-    id: MODELPORT_DEEPSEEK_MODEL_ID,
-    name: 'DeepSeek V4 Flash (ModelPort)',
-    description: '通过本机 ModelPort 转发到 DeepSeek 官方 Anthropic 协议的日常接入',
+    id: AETHERGATEWAY_DEEPSEEK_MODEL_ID,
+    name: 'DeepSeek V4 Flash (AetherGateway)',
+    description: '通过本机 AetherGateway 转发到 DeepSeek 官方 Anthropic 协议的日常接入',
     supportsImages: false,
     provider: 'openai',
-    runtime: 'modelport',
+    runtime: 'aethergateway',
     external: false,
     aliases: [
-      MODELPORT_DEEPSEEK_MODEL_ID,
-      'modelport deepseek',
-      'deepseek via modelport',
+      AETHERGATEWAY_DEEPSEEK_MODEL_ID,
+      'aethergateway deepseek',
+      'deepseek via aethergateway',
       'deepseek',
     ],
   },

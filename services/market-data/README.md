@@ -48,7 +48,7 @@ uv sync --extra baostock --extra akshare
 启动服务：
 
 ```bash
-uv run quantpilot-market-api
+uv run signalfoundry-market-api
 ```
 
 默认地址：
@@ -61,34 +61,34 @@ http://127.0.0.1:8000
 
 ```bash
 # 服务监听地址
-export QUANTPILOT_MARKET_HOST=127.0.0.1
-export QUANTPILOT_MARKET_PORT=8000
+export SIGNALFOUNDRY_MARKET_HOST=127.0.0.1
+export SIGNALFOUNDRY_MARKET_PORT=8000
 # strict 模式或非 loopback 监听时必填；配置后本机写接口也必须携带令牌
-export QUANTPILOT_MARKET_ADMIN_TOKEN=replace-with-a-long-random-token
+export SIGNALFOUNDRY_MARKET_ADMIN_TOKEN=replace-with-a-long-random-token
 
 # 东方财富主备域名，按顺序失败重试
 export EASTMONEY_BASE_URLS=https://push2.eastmoney.com,https://push2delay.eastmoney.com
 
-# 本地缓存；默认开启，默认目录为 ~/.cache/quantpilot/market_data
-export QUANTPILOT_MARKET_CACHE_ENABLED=1
-export QUANTPILOT_MARKET_CACHE_DIR=/tmp/quantpilot-market-cache
-export QUANTPILOT_QUOTE_CACHE_TTL_SECONDS=5
-export QUANTPILOT_KLINE_CACHE_TTL_SECONDS=1800
-export QUANTPILOT_FINANCIAL_CACHE_TTL_SECONDS=21600
-export QUANTPILOT_ANNOUNCEMENT_CACHE_TTL_SECONDS=600
-export QUANTPILOT_SCREENER_CACHE_TTL_SECONDS=60
+# 本地缓存；默认开启，默认目录为 ~/.cache/signalfoundry/market_data
+export SIGNALFOUNDRY_MARKET_CACHE_ENABLED=1
+export SIGNALFOUNDRY_MARKET_CACHE_DIR=/tmp/signalfoundry-market-cache
+export SIGNALFOUNDRY_QUOTE_CACHE_TTL_SECONDS=5
+export SIGNALFOUNDRY_KLINE_CACHE_TTL_SECONDS=1800
+export SIGNALFOUNDRY_FINANCIAL_CACHE_TTL_SECONDS=21600
+export SIGNALFOUNDRY_ANNOUNCEMENT_CACHE_TTL_SECONDS=600
+export SIGNALFOUNDRY_SCREENER_CACHE_TTL_SECONDS=60
 
 # Redis 跨进程短期缓存；默认由根目录 docker-compose 拉起
 export REDIS_URL=redis://127.0.0.1:6379/0
-export REDIS_NAMESPACE=quantpilot
-export QUANTPILOT_REDIS_CACHE_ENABLED=1
+export REDIS_NAMESPACE=signalfoundry
+export SIGNALFOUNDRY_REDIS_CACHE_ENABLED=1
 
 # ClickHouse 分析加速层；默认关闭，启用后仍以 TimescaleDB 为事实主库
-export QUANTPILOT_CLICKHOUSE_ENABLED=1
+export SIGNALFOUNDRY_CLICKHOUSE_ENABLED=1
 export CLICKHOUSE_URL=http://127.0.0.1:8123
-export CLICKHOUSE_DB=quantpilot
-export CLICKHOUSE_USER=quantpilot
-export CLICKHOUSE_PASSWORD=quantpilot_dev_password
+export CLICKHOUSE_DB=signalfoundry
+export CLICKHOUSE_USER=signalfoundry
+export CLICKHOUSE_PASSWORD=signalfoundry_dev_password
 ```
 
 ## 接口
@@ -258,15 +258,15 @@ curl 'http://127.0.0.1:8000/api/v1/events/announcements/600519?limit=20'
 
 ## 代码结构
 
-- `quantpilot_market_data/cache.py`：本地 JSON 缓存、Redis JSON 缓存、TTL 和 fetch 元信息。
-- `quantpilot_market_data/providers/eastmoney.py`：东方财富数据源客户端。
-- `quantpilot_market_data/providers/baostock.py`：Baostock A 股历史字段补数 provider。
-- `quantpilot_market_data/providers/akshare.py`：AKShare 可选补数字段 provider。
-- `quantpilot_market_data/database_core.py`：数据库连接、日期和序列化等共享基础函数。
-- `quantpilot_market_data/repositories/`：TimescaleDB/PostgreSQL 查询、事务、批量写入与分页；不存在聚合 `database.py` 兼容入口。
-- `quantpilot_market_data/contracts/`：行情数据模型。
-- `quantpilot_market_data/api.py`：FastAPI HTTP 服务。
-- `quantpilot_market_data/cli.py`：启动入口。
+- `signalfoundry_market_data/cache.py`：本地 JSON 缓存、Redis JSON 缓存、TTL 和 fetch 元信息。
+- `signalfoundry_market_data/providers/eastmoney.py`：东方财富数据源客户端。
+- `signalfoundry_market_data/providers/baostock.py`：Baostock A 股历史字段补数 provider。
+- `signalfoundry_market_data/providers/akshare.py`：AKShare 可选补数字段 provider。
+- `signalfoundry_market_data/database_core.py`：数据库连接、日期和序列化等共享基础函数。
+- `signalfoundry_market_data/repositories/`：TimescaleDB/PostgreSQL 查询、事务、批量写入与分页；不存在聚合 `database.py` 兼容入口。
+- `signalfoundry_market_data/contracts/`：行情数据模型。
+- `signalfoundry_market_data/api.py`：FastAPI HTTP 服务。
+- `signalfoundry_market_data/cli.py`：启动入口。
 
 ## 说明
 

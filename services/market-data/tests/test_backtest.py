@@ -4,8 +4,8 @@ from decimal import Decimal
 
 import pytest
 
-from quantpilot_market_data.backtest import build_strategy_backtest
-from quantpilot_market_data.contracts.quotes import KlineBar, KlineResponse
+from signalfoundry_market_data.backtest import build_strategy_backtest
+from signalfoundry_market_data.contracts.quotes import KlineBar, KlineResponse
 
 
 def sample_kline() -> KlineResponse:
@@ -93,7 +93,7 @@ def test_skill_validator_accepts_current_backend_response(initial_cash: Decimal)
     import sys
     from pathlib import Path
 
-    from quantpilot_market_data.backtest import build_ma_crossover_backtest
+    from signalfoundry_market_data.backtest import build_ma_crossover_backtest
 
     result = build_ma_crossover_backtest(
         sample_kline(), fast_window=10, slow_window=30, initial_cash=initial_cash, fee_bps=5,

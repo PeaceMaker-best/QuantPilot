@@ -94,7 +94,7 @@ async function stopRootDevServer() {
 
 function parseBuildArgs(argv) {
   const args = [];
-  let standalone = process.env.QUANTPILOT_STANDALONE_BUILD === '1';
+  let standalone = process.env.SIGNALFOUNDRY_STANDALONE_BUILD === '1';
 
   for (const arg of argv) {
     if (arg === '--standalone') {
@@ -120,9 +120,9 @@ async function runNextBuild(args, { standalone } = {}) {
         shell: isWindows,
         env: {
           ...process.env,
-          QUANTPILOT_STANDALONE_BUILD: standalone ? '1' : '0',
-          QUANTPILOT_SKIP_ROUTE_TRACING:
-            process.env.QUANTPILOT_SKIP_ROUTE_TRACING || (standalone ? '0' : '1'),
+          SIGNALFOUNDRY_STANDALONE_BUILD: standalone ? '1' : '0',
+          SIGNALFOUNDRY_SKIP_ROUTE_TRACING:
+            process.env.SIGNALFOUNDRY_SKIP_ROUTE_TRACING || (standalone ? '0' : '1'),
           NEXT_TELEMETRY_DISABLED: '1',
           NEXT_PUBLIC_PROJECT_ROOT: process.env.NEXT_PUBLIC_PROJECT_ROOT || rootDir,
         },
@@ -190,8 +190,8 @@ async function prepareStandaloneRuntime() {
     force: true,
     filter: (source) => !excludedPublicDirectories.has(source),
   });
-  const stableCssSource = path.join(publicSource, 'generated', 'quantpilot-tailwind.css');
-  const stableCssTarget = path.join(publicTarget, 'generated', 'quantpilot-tailwind.css');
+  const stableCssSource = path.join(publicSource, 'generated', 'signalfoundry-tailwind.css');
+  const stableCssTarget = path.join(publicTarget, 'generated', 'signalfoundry-tailwind.css');
   await fs.mkdir(path.dirname(stableCssTarget), { recursive: true });
   await fs.copyFile(stableCssSource, stableCssTarget);
 

@@ -51,15 +51,15 @@ npm run doctor:full
 如果本机没有启动部分组件，可通过 `.env` 控制降级：
 
 ```bash
-QUANTPILOT_DEGRADATION_MODE=offline npm run doctor
+SIGNALFOUNDRY_DEGRADATION_MODE=offline npm run doctor
 ```
 
-`offline` 会跳过市场数据后端、Memory、Loki/Grafana/Alloy 和 Redis 等可选外部探测；`auto` 适合本地开发；`strict` 适合 CI 或生产巡检。只想关闭 Memory 时使用 `QUANTPILOT_MEMORY_ENABLED=0`，不要切换整个系统到 `offline`。
+`offline` 会跳过市场数据后端、Memory、Loki/Grafana/Alloy 和 Redis 等可选外部探测；`auto` 适合本地开发；`strict` 适合 CI 或生产巡检。只想关闭 Memory 时使用 `SIGNALFOUNDRY_MEMORY_ENABLED=0`，不要切换整个系统到 `offline`。
 
 前端开发启动还有一个恢复保护：如果曾经用降级方式启动，但下一次启动时数据库、market-data、Redis 或 Loki 已经恢复，`npm run dev` 会在本次进程里切回 `auto` 和启用状态。只有确实要保留降级时才加：
 
 ```bash
-QUANTPILOT_AUTO_RESTORE_DEGRADATION=0 npm run dev
+SIGNALFOUNDRY_AUTO_RESTORE_DEGRADATION=0 npm run dev
 ```
 
 ## 3000 端口被占用
@@ -91,7 +91,7 @@ http://localhost:3000
 npm run dev -> scripts/dev/run-full.js -> scripts/dev/run-web.js -> npx next dev
 ```
 
-启动器只负责环境、端口、稳定 CSS、Prisma 检查和 Next dev 缓存保护；不再接入 `next-rspack`，也不再读取 `QUANTPILOT_BUNDLER` 做 bundler 切换。
+启动器只负责环境、端口、稳定 CSS、Prisma 检查和 Next dev 缓存保护；不再接入 `next-rspack`，也不再读取 `SIGNALFOUNDRY_BUNDLER` 做 bundler 切换。
 
 如果启动日志看起来混乱，先确认依赖和缓存：
 
@@ -101,7 +101,7 @@ rm -rf .next/dev/cache/webpack .next/dev/lock
 npm run dev
 ```
 
-如果日志里仍出现 `next-rspack`、`QUANTPILOT_DISABLE_RSPACK` 或 Rspack panic，说明本机依赖或旧启动进程没有清干净。先停止旧进程，再确认 `package.json` 中没有 `next-rspack` 依赖。
+如果日志里仍出现 `next-rspack`、`SIGNALFOUNDRY_DISABLE_RSPACK` 或 Rspack panic，说明本机依赖或旧启动进程没有清干净。先停止旧进程，再确认 `package.json` 中没有 `next-rspack` 依赖。
 
 ## 8000 后端不可用
 
@@ -114,13 +114,13 @@ curl http://127.0.0.1:8000/health
 ```bash
 cd services/market-data
 uv sync --extra baostock --extra akshare
-uv run quantpilot-market-api
+uv run signalfoundry-market-api
 ```
 
 如果只是浏览平台页面而不需要实时行情，可临时关闭市场数据后端探测：
 
 ```bash
-QUANTPILOT_MARKET_API_ENABLED=0 npm run doctor
+SIGNALFOUNDRY_MARKET_API_ENABLED=0 npm run doctor
 ```
 
 ## Loki / Grafana 不可用
@@ -141,39 +141,39 @@ Alloy: http://localhost:12345
 
 如果不需要集中日志，可保持 Loki 停止。运行治理中心会降级读取本地日志文件；`npm run doctor` 在 `auto` 模式下只给 warning，不会失败。
 
-## 默认 ModelPort Qwen 未就绪
+## 默认 AetherGateway Qwen 未就绪
 
-确认 ModelPort 监听 `http://127.0.0.1:38082/v1`，并在 SignalFoundry `.env.local` 中配置它签发的受限客户端 Key：
+确认 AetherGateway 监听 `http://127.0.0.1:38082/v1`，并在 SignalFoundry `.env.local` 中配置它签发的受限客户端 Key：
 
 ```dotenv
-MODELPORT_API_KEY="your-scoped-modelport-client-key"
+AETHERGATEWAY_API_KEY="your-scoped-aethergateway-client-key"
 ```
 
 默认 profile 固定为 `local_qwen:qwen3.5-9b-q5km`。可先请求 `/v1/models` 验证鉴权；`401` 表示服务已连通但客户端 Key 未被接受，`403` 表示 Key 未获准访问该 provider/model。配置修改后重启 SignalFoundry。新项目和未显式指定模型的 Query Rewrite 会自动使用 Qwen。
 
-## 日常 ModelPort DeepSeek 未就绪
+## 日常 AetherGateway DeepSeek 未就绪
 
-确认 ModelPort 自身运行环境包含 DeepSeek 上游 Key，SignalFoundry 不保存该 Key：
+确认 AetherGateway 自身运行环境包含 DeepSeek 上游 Key，SignalFoundry 不保存该 Key：
 
 ```dotenv
 DEEPSEEK_ANTHROPIC_AUTH_TOKEN="your-deepseek-upstream-key"
 ```
 
-ModelPort `deepseek` provider 必须使用 `protocol = "anthropic"`、Base URL `https://api.deepseek.com/anthropic`，并公布 `deepseek:deepseek-v4-flash`。SignalFoundry 的 `MODELPORT_API_KEY` 还必须获准访问 `deepseek` provider 和该限定模型。管理台“查询余额”成功但模型请求失败时，重点检查协议/工具兼容；余额查询失败时检查上游 Key 与 DeepSeek 账户状态。
+AetherGateway `deepseek` provider 必须使用 `protocol = "anthropic"`、Base URL `https://api.deepseek.com/anthropic`，并公布 `deepseek:deepseek-v4-flash`。SignalFoundry 的 `AETHERGATEWAY_API_KEY` 还必须获准访问 `deepseek` provider 和该限定模型。管理台“查询余额”成功但模型请求失败时，重点检查协议/工具兼容；余额查询失败时检查上游 Key 与 DeepSeek 账户状态。
 
 只有显式选择 `deepseek-v4-flash` 官方直连 profile 时，SignalFoundry 运行环境才需要注入 `DEEPSEEK_API_KEY`；默认本地使用不配置它。
 
 ## DeepSeek 官方直连失败
 
-先确认项目选择的是 `deepseek-v4-flash`，不是带命名空间的 `deepseek:deepseek-v4-flash`。前者直连官方，后者经过 ModelPort。再检查当前 SignalFoundry 进程能否读取：
+先确认项目选择的是 `deepseek-v4-flash`，不是带命名空间的 `deepseek:deepseek-v4-flash`。前者直连官方，后者经过 AetherGateway。再检查当前 SignalFoundry 进程能否读取：
 
 ```bash
 test -n "${DEEPSEEK_API_KEY}" && echo configured || echo missing
 ```
 
-如果 Key 写在 `.env.local`，修改后必须重启 SignalFoundry。官方直连不读取 `MODELPORT_API_KEY` 或 `DEEPSEEK_ANTHROPIC_AUTH_TOKEN`；也不会访问 `127.0.0.1:38082`。完全不运行 ModelPort 时，还要把账号/新项目默认模型显式改为官方直连，否则代码级默认 Qwen 的连接失败是预期行为。
+如果 Key 写在 `.env.local`，修改后必须重启 SignalFoundry。官方直连不读取 `AETHERGATEWAY_API_KEY` 或 `DEEPSEEK_ANTHROPIC_AUTH_TOKEN`；也不会访问 `127.0.0.1:38082`。完全不运行 AetherGateway 时，还要把账号/新项目默认模型显式改为官方直连，否则代码级默认 Qwen 的连接失败是预期行为。
 
-可直接请求 `https://api.deepseek.com/chat/completions` 区分官方鉴权问题与 SignalFoundry 运行问题；该验证会产生真实 Token 费用，示例见[模型 Provider 接入](model-providers.md#deepseek-官方直连不走-modelport)。
+可直接请求 `https://api.deepseek.com/chat/completions` 区分官方鉴权问题与 SignalFoundry 运行问题；该验证会产生真实 Token 费用，示例见[模型 Provider 接入](model-providers.md#deepseek-官方直连不走-aethergateway)。
 
 然后重启并检查：
 
@@ -322,7 +322,7 @@ Loki 可用时优先在运行治理中心日志页查集中日志；Loki 不可�
 
 ## Memory 已启动但聊天没有个性化
 
-如果 `QUANTPILOT_MEMORY_ENABLED=0`，`personalization.status=disabled` 是正常结果，不需要启动 Memory 或继续排查 URL/token。`REQUIRED=0` 则不是关闭：服务健康时仍会召回，异常时状态为 `unavailable` 并允许核心任务继续。
+如果 `SIGNALFOUNDRY_MEMORY_ENABLED=0`，`personalization.status=disabled` 是正常结果，不需要启动 Memory 或继续排查 URL/token。`REQUIRED=0` 则不是关闭：服务健康时仍会召回，异常时状态为 `unavailable` 并允许核心任务继续。
 
 先把“服务存活”“契约兼容”和“有匹配偏好”分开检查：
 
@@ -335,4 +335,4 @@ npm run doctor
 
 根路径必须包含 `api_contract=evolvable-memory-http/v1`，`/readyz` 必须是 `ready`，SignalFoundry readiness 中的 `memory` 组件必须是 `ok`。根路径返回 200 但没有 `api_contract`，通常说明旧进程或旧镜像未重启；重新构建或重启 Memory 后再验证。
 
-服务健康但消息 metadata 为 `personalization.status=empty` 时，检查是否真的写入了允许的 `analysis.*`、`output.*` 或 `research.*` 键，`context.product` 是否为 `quantpilot`，项目级偏好的 `project_id` 是否与当前项目一致。`prepared` 表示候选偏好已通过过滤，但只有最终回复显示“本轮实际使用了 N 条个人偏好”才证明 capsule 真正进入 Agent；澄清、拒绝和平台直出不会产生可反馈归因。`unavailable` 表示可选集成已降级，核心任务会继续；具体 API 示例、状态解释和 Outcome 归因规则见[用户记忆服务接入、使用与效果验证](user-memory-integration.md)。
+服务健康但消息 metadata 为 `personalization.status=empty` 时，检查是否真的写入了允许的 `analysis.*`、`output.*` 或 `research.*` 键，`context.product` 是否为 `signalfoundry`，项目级偏好的 `project_id` 是否与当前项目一致。`prepared` 表示候选偏好已通过过滤，但只有最终回复显示“本轮实际使用了 N 条个人偏好”才证明 capsule 真正进入 Agent；澄清、拒绝和平台直出不会产生可反馈归因。`unavailable` 表示可选集成已降级，核心任务会继续；具体 API 示例、状态解释和 Outcome 归因规则见[用户记忆服务接入、使用与效果验证](user-memory-integration.md)。

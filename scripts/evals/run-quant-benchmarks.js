@@ -94,13 +94,13 @@ const CUSTOM_LANE_BUDGETS = createPiAgentPhaseGraph({
 loadProjectEnvironment();
 
 const prisma = new PrismaClient();
-const CASES_PATH = path.resolve('benchmarks/quantpilot/cases.json');
-const E2E_SUITE_PATH = path.resolve('benchmarks/quantpilot/e2e-suite.json');
-const DATASET_REGISTRY_PATH = path.resolve('benchmarks/quantpilot/datasets.json');
-const SNAPSHOT_MANIFEST_PATH = path.resolve('benchmarks/quantpilot/snapshot-manifest.json');
-const QUERY_REWRITE_FIXTURES_PATH = path.resolve('benchmarks/quantpilot/query-rewrite-fixtures.json');
+const CASES_PATH = path.resolve('benchmarks/signalfoundry/cases.json');
+const E2E_SUITE_PATH = path.resolve('benchmarks/signalfoundry/e2e-suite.json');
+const DATASET_REGISTRY_PATH = path.resolve('benchmarks/signalfoundry/datasets.json');
+const SNAPSHOT_MANIFEST_PATH = path.resolve('benchmarks/signalfoundry/snapshot-manifest.json');
+const QUERY_REWRITE_FIXTURES_PATH = path.resolve('benchmarks/signalfoundry/query-rewrite-fixtures.json');
 const PROJECTS_DIR = path.resolve(process.env.PROJECTS_DIR || './data/projects');
-const REPORTS_DIR = path.resolve('tmp/quantpilot-benchmark-reports');
+const REPORTS_DIR = path.resolve('tmp/signalfoundry-benchmark-reports');
 const DEFAULT_MODEL = getDefaultModelForCli('pi');
 const QUERY_REWRITE_FIXTURES = require(QUERY_REWRITE_FIXTURES_PATH);
 
@@ -148,15 +148,15 @@ function parseArgs(argv) {
   const selected = new Set();
   let limit = null;
   let keepProjects = false;
-  let trigger = process.env.QUANTPILOT_EVAL_TRIGGER || 'cli';
-  let evaluatorId = process.env.QUANTPILOT_EVAL_EVALUATOR || 'rule-strict';
-  let concurrency = Number.parseInt(process.env.QUANTPILOT_EVAL_CONCURRENCY || '1', 10);
-  let repeat = Number.parseInt(process.env.QUANTPILOT_EVAL_REPEAT || '1', 10);
-  let mode = process.env.QUANTPILOT_EVAL_MODE || 'contract';
-  let datasetVisibility = process.env.QUANTPILOT_EVAL_DATASET_VISIBILITY || 'public';
-  let casesFile = process.env.QUANTPILOT_EVAL_CASES_PATH || null;
+  let trigger = process.env.SIGNALFOUNDRY_EVAL_TRIGGER || 'cli';
+  let evaluatorId = process.env.SIGNALFOUNDRY_EVAL_EVALUATOR || 'rule-strict';
+  let concurrency = Number.parseInt(process.env.SIGNALFOUNDRY_EVAL_CONCURRENCY || '1', 10);
+  let repeat = Number.parseInt(process.env.SIGNALFOUNDRY_EVAL_REPEAT || '1', 10);
+  let mode = process.env.SIGNALFOUNDRY_EVAL_MODE || 'contract';
+  let datasetVisibility = process.env.SIGNALFOUNDRY_EVAL_DATASET_VISIBILITY || 'public';
+  let casesFile = process.env.SIGNALFOUNDRY_EVAL_CASES_PATH || null;
   let cli = 'pi';
-  let model = process.env.QUANTPILOT_EVAL_MODEL || DEFAULT_MODEL;
+  let model = process.env.SIGNALFOUNDRY_EVAL_MODEL || DEFAULT_MODEL;
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -291,8 +291,8 @@ function parseArgs(argv) {
   }
   if (datasetVisibility !== 'public') {
     casesFile = casesFile || (datasetVisibility === 'hidden'
-      ? process.env.QUANTPILOT_HIDDEN_EVAL_CASES_PATH
-      : process.env.QUANTPILOT_PRODUCTION_REPLAY_CASES_PATH) || null;
+      ? process.env.SIGNALFOUNDRY_HIDDEN_EVAL_CASES_PATH
+      : process.env.SIGNALFOUNDRY_PRODUCTION_REPLAY_CASES_PATH) || null;
     if (!casesFile) {
       throw new Error(`${datasetVisibility} 评测必须通过环境变量或 --cases-file 注入外部数据集`);
     }
@@ -1240,7 +1240,7 @@ function runRuntimeRegistryCase(testCase) {
 
   assertCondition(registeredModels.length === 3, `平台应暴露 3 个受控模型，实际 ${registeredModels.length} 个。`, failures);
   assertCondition(registeredModels[0]?.id === DEFAULT_MODEL, `首个模型应为 ${DEFAULT_MODEL}，实际 ${registeredModels[0]?.id}`, failures);
-  assertCondition(registeredModels[1]?.id === 'deepseek:deepseek-v4-flash', `第二个模型应为 ModelPort DeepSeek，实际 ${registeredModels[1]?.id}`, failures);
+  assertCondition(registeredModels[1]?.id === 'deepseek:deepseek-v4-flash', `第二个模型应为 AetherGateway DeepSeek，实际 ${registeredModels[1]?.id}`, failures);
   assertCondition(registeredModels[2]?.id === 'deepseek-v4-flash', `第三个模型应为可选官方直连，实际 ${registeredModels[2]?.id}`, failures);
   assertCondition(getDefaultModelForCli('pi') === DEFAULT_MODEL, `默认模型应为 ${DEFAULT_MODEL}，实际 ${getDefaultModelForCli('pi')}`, failures);
   assertCondition(normalizeModelId('pi', 'local_qwen:qwen3.5-9b-q5km') === 'local_qwen:qwen3.5-9b-q5km', '已注册的本地 Qwen 输入应被保留。', failures);
@@ -1263,7 +1263,7 @@ function runRuntimeRegistryCase(testCase) {
     },
     validation: {
       status: failures.length === 0 ? 'passed' : 'failed',
-      checks: [{ id: 'runtime_registry', status: failures.length === 0 ? 'passed' : 'failed', summary: '本地 Qwen、ModelPort DeepSeek 与官方直连接入边界检查。' }],
+      checks: [{ id: 'runtime_registry', status: failures.length === 0 ? 'passed' : 'failed', summary: '本地 Qwen、AetherGateway DeepSeek 与官方直连接入边界检查。' }],
     },
   };
 }
@@ -1672,7 +1672,7 @@ async function runVisualCheck({ projectId, testCase }) {
   }
 
   const { chromium } = require('playwright');
-  const screenshotDir = path.resolve('tmp/quantpilot-benchmark-screenshots');
+  const screenshotDir = path.resolve('tmp/signalfoundry-benchmark-screenshots');
   await fs.mkdir(screenshotDir, { recursive: true });
   const failures = [];
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -1689,7 +1689,7 @@ async function runVisualCheck({ projectId, testCase }) {
     preview = await previewManager.start(projectId);
     browser = await chromium.launch({
       headless: true,
-      executablePath: process.env.QUANTPILOT_CHROMIUM_EXECUTABLE_PATH || undefined,
+      executablePath: process.env.SIGNALFOUNDRY_CHROMIUM_EXECUTABLE_PATH || undefined,
     });
     for (const viewport of viewports) {
       const page = await browser.newPage({
@@ -1821,7 +1821,7 @@ async function readGenerationPrefetch(projectPath) {
 
 async function waitForAcceptedMission({ projectPath, projectId, requestId }) {
   const timeoutMs = Number.parseInt(
-    process.env.QUANTPILOT_E2E_MISSION_TIMEOUT_MS || '1200000',
+    process.env.SIGNALFOUNDRY_E2E_MISSION_TIMEOUT_MS || '1200000',
     10,
   );
   const deadline = Date.now() + (Number.isSafeInteger(timeoutMs) && timeoutMs > 0
@@ -2782,7 +2782,7 @@ async function main() {
         visibility: args.datasetVisibility,
         promptsRedacted: args.datasetVisibility !== 'public',
         sourceIdentitySha256: sha256(
-          args.datasetVisibility === 'public' ? 'benchmarks/quantpilot/cases.json' : args.datasetVisibility,
+          args.datasetVisibility === 'public' ? 'benchmarks/signalfoundry/cases.json' : args.datasetVisibility,
         ),
       },
       provenance: {

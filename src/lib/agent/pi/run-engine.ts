@@ -370,8 +370,8 @@ function toPiConversation(messages: readonly PiAgentMessage[]): {
         conversation.push({
           role: 'assistant',
           content,
-          api: 'quantpilot-provider',
-          provider: 'quantpilot-history',
+          api: 'signalfoundry-provider',
+          provider: 'signalfoundry-history',
           model: 'history',
           usage: { ...EMPTY_PI_USAGE, cost: { ...EMPTY_PI_USAGE.cost } },
           stopReason: message.toolCalls?.length ? 'toolUse' : 'stop',
@@ -453,7 +453,7 @@ function modelForPi(
   return {
     id: model,
     name: model,
-    api: 'quantpilot-provider',
+    api: 'signalfoundry-provider',
     provider,
     baseUrl: '',
     reasoning,
@@ -567,7 +567,7 @@ function providerMessage(options: {
   return {
     role: 'assistant',
     content,
-    api: 'quantpilot-provider',
+    api: 'signalfoundry-provider',
     provider: providerName,
     model: request.model,
     ...(state.responseId ? { responseId: state.responseId } : {}),
@@ -602,7 +602,7 @@ function providerErrorMessage(options: {
   return {
     role: 'assistant',
     content: [],
-    api: 'quantpilot-provider',
+    api: 'signalfoundry-provider',
     provider: options.providerName,
     model: options.request.model,
     usage: errorUsage,
@@ -1151,7 +1151,7 @@ export class PiAgentRunEngine {
           const partial: AssistantMessage = {
             role: 'assistant',
             content: [],
-            api: 'quantpilot-provider',
+            api: 'signalfoundry-provider',
             provider: this.options.provider.name,
             model: this.options.model,
             usage: { ...EMPTY_PI_USAGE, cost: { ...EMPTY_PI_USAGE.cost } },

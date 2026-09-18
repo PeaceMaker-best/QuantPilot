@@ -9,7 +9,7 @@ import type {
 } from './evaluators';
 import { loadReviewEvidence, resolvesReviewEvidence, type ReviewEvidence } from './review-evidence';
 
-export const AGENT_REVIEW_PROMPT_VERSION = 'quantpilot-agent-review-prompt-v2';
+export const AGENT_REVIEW_PROMPT_VERSION = 'signalfoundry-agent-review-prompt-v2';
 const REVIEW_DIMENSION_IDS = [
   'intentCoverage',
   'businessCompleteness',
@@ -196,7 +196,7 @@ export async function reviewAgentWorkspace(input: {
     maxTokens: 2_000,
     reasoning: { enabled: false },
     signal: input.signal ? AbortSignal.any([input.signal, AbortSignal.timeout(60_000)]) : AbortSignal.timeout(60_000),
-    metadata: { purpose: 'quantpilot-agent-evaluation' },
+    metadata: { purpose: 'signalfoundry-agent-evaluation' },
   })) {
     if (event.type === 'finish' && event.reason !== 'stop') {
       throw new Error('Agent 语义审阅未完整结束，拒绝使用部分评分。');

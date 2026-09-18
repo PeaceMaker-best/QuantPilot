@@ -27,7 +27,7 @@ for required_path in "$workspace" "$node_modules" "$node_runtime"; do
 done
 
 mount --make-rprivate /
-sandbox_root="$(mktemp -d "${TMPDIR:-/tmp}/quantpilot-generated-sandbox.XXXXXX")"
+sandbox_root="$(mktemp -d "${TMPDIR:-/tmp}/signalfoundry-generated-sandbox.XXXXXX")"
 cleanup() {
   cd /
   umount -R "$sandbox_root" 2>/dev/null || true
@@ -113,13 +113,13 @@ ln -s /proc/self/fd/2 "$sandbox_root/dev/stderr"
 # short, per-preview runtime directory under /tmp. Bind only that empty runtime
 # directory into the chroot so the two narrow loopback bridges can rendezvous;
 # do not expose the host /tmp tree.
-if [[ -n "${QUANTPILOT_SANDBOX_PREVIEW_SOCKET:-}" || -n "${QUANTPILOT_SANDBOX_MARKET_SOCKET:-}" ]]; then
-  if [[ -z "${QUANTPILOT_SANDBOX_PREVIEW_SOCKET:-}" || -z "${QUANTPILOT_SANDBOX_MARKET_SOCKET:-}" ]]; then
+if [[ -n "${SIGNALFOUNDRY_SANDBOX_PREVIEW_SOCKET:-}" || -n "${SIGNALFOUNDRY_SANDBOX_MARKET_SOCKET:-}" ]]; then
+  if [[ -z "${SIGNALFOUNDRY_SANDBOX_PREVIEW_SOCKET:-}" || -z "${SIGNALFOUNDRY_SANDBOX_MARKET_SOCKET:-}" ]]; then
     echo "sandbox preview and market sockets must be configured together" >&2
     exit 64
   fi
-  preview_socket_dir="$(dirname "$QUANTPILOT_SANDBOX_PREVIEW_SOCKET")"
-  market_socket_dir="$(dirname "$QUANTPILOT_SANDBOX_MARKET_SOCKET")"
+  preview_socket_dir="$(dirname "$SIGNALFOUNDRY_SANDBOX_PREVIEW_SOCKET")"
+  market_socket_dir="$(dirname "$SIGNALFOUNDRY_SANDBOX_MARKET_SOCKET")"
   if [[ "$preview_socket_dir" != "$market_socket_dir" || ! -d "$preview_socket_dir" ]]; then
     echo "sandbox sockets must share an existing runtime directory" >&2
     exit 64
@@ -174,7 +174,7 @@ sandbox_env=(
   "CI=${CI:-1}"
   "NODE_OPTIONS=--max-old-space-size=2048"
   "NEXT_TELEMETRY_DISABLED=1"
-  "QUANTPILOT_WORKSPACE_ROOT=$(dirname "$node_modules")"
+  "SIGNALFOUNDRY_WORKSPACE_ROOT=$(dirname "$node_modules")"
 )
 for env_name in LANG LC_ALL LC_CTYPE TERM TZ PORT WEB_PORT NEXT_PUBLIC_APP_URL NODE_ENV NEXT_PRIVATE_BUILD_WORKER; do
   if [[ -n "${!env_name:-}" ]]; then
@@ -210,7 +210,7 @@ chroot_command=(
   --
 )
 
-if [[ -n "${QUANTPILOT_SANDBOX_PREVIEW_SOCKET:-}" && -n "${QUANTPILOT_SANDBOX_PREVIEW_PORT:-}" ]]; then
+if [[ -n "${SIGNALFOUNDRY_SANDBOX_PREVIEW_SOCKET:-}" && -n "${SIGNALFOUNDRY_SANDBOX_PREVIEW_PORT:-}" ]]; then
   "${chroot_command[@]}" /bin/sh -c '
     set -eu
     workspace="$1"
@@ -244,16 +244,16 @@ if [[ -n "${QUANTPILOT_SANDBOX_PREVIEW_SOCKET:-}" && -n "${QUANTPILOT_SANDBOX_PR
 
     cd "$workspace"
     "$@"
-  ' quantpilot-sandbox \
+  ' signalfoundry-sandbox \
     "$workspace" \
     "$preview_bridge" \
-    "$QUANTPILOT_SANDBOX_PREVIEW_SOCKET" \
-    "$QUANTPILOT_SANDBOX_PREVIEW_PORT" \
+    "$SIGNALFOUNDRY_SANDBOX_PREVIEW_SOCKET" \
+    "$SIGNALFOUNDRY_SANDBOX_PREVIEW_PORT" \
     "$market_bridge" \
-    "${QUANTPILOT_SANDBOX_MARKET_SOCKET:-}" \
-    "${QUANTPILOT_SANDBOX_MARKET_PORT:-}" \
+    "${SIGNALFOUNDRY_SANDBOX_MARKET_SOCKET:-}" \
+    "${SIGNALFOUNDRY_SANDBOX_MARKET_PORT:-}" \
     "$@"
 else
   "${chroot_command[@]}" \
-    /bin/sh -c 'cd "$1" && shift && exec "$@"' quantpilot-sandbox "$workspace" "$@"
+    /bin/sh -c 'cd "$1" && shift && exec "$@"' signalfoundry-sandbox "$workspace" "$@"
 fi

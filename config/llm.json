@@ -6,7 +6,7 @@
       "provider": "openai",
       "model": "deepseek:deepseek-v4-flash",
       "baseUrl": "http://127.0.0.1:38082/v1",
-      "credentialEnv": "MODELPORT_API_KEY",
+      "credentialEnv": "AETHERGATEWAY_API_KEY",
       "agent": {
         "enabled": true
       },
@@ -34,7 +34,7 @@
       "provider": "openai",
       "model": "local_qwen:qwen3.5-9b-q5km",
       "baseUrl": "http://127.0.0.1:38082/v1",
-      "credentialEnv": "MODELPORT_API_KEY",
+      "credentialEnv": "AETHERGATEWAY_API_KEY",
       "agent": {
         "enabled": true
       },

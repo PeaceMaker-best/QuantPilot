@@ -48,7 +48,7 @@ interface IntegrationScopeUse {
   memoryTenantId: string;
   projectId: string;
   scopeSha256: string;
-  modelPort: ProjectIntegrationScope['modelPort'];
+  aetherGateway: ProjectIntegrationScope['aetherGateway'];
   requestedKnowledgeSpaceIds: string[];
   projectKnowledgeSpaceId: string | null;
 }
@@ -90,7 +90,7 @@ function integrationScopeUse(scope: ProjectIntegrationScope, projectId: string):
     memoryTenantId: scope.memory.tenantId,
     projectId: scope.projectId,
     scopeSha256: scope.scopeSha256,
-    modelPort: scope.modelPort,
+    aetherGateway: scope.aetherGateway,
     requestedKnowledgeSpaceIds: stableUnique(scope.knowledge.requestedSpaceIds),
     projectKnowledgeSpaceId: scope.knowledge.projectSpaceId,
   };

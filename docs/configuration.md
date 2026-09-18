@@ -1,17 +1,17 @@
 # 配置、模型接入与可选组件指南
 
-这篇文档是 SignalFoundry 配置方式的权威入口。它回答几个最容易混淆的问题：配置应该放在哪个文件、模型是否必须经过 ModelPort、Memory 与受治理知识是否启用，以及不同组合如何验证。
+这篇文档是 SignalFoundry 配置方式的权威入口。它回答几个最容易混淆的问题：配置应该放在哪个文件、模型是否必须经过 AetherGateway、Memory 与受治理知识是否启用，以及不同组合如何验证。
 
 SignalFoundry 支持这些长期运行方式：
 
-- 推荐拓扑：默认 Qwen 经 ModelPort，日常 DeepSeek 也经 ModelPort。
-- 官方直连：某个项目直接调用 DeepSeek 官方 OpenAI-compatible API，不经过 ModelPort。
-- Qwen-only：只安装 ModelPort 的本地 Qwen provider，不配置任何 DeepSeek 上游凭据。
+- 推荐拓扑：默认 Qwen 经 AetherGateway，日常 DeepSeek 也经 AetherGateway。
+- 官方直连：某个项目直接调用 DeepSeek 官方 OpenAI-compatible API，不经过 AetherGateway。
+- Qwen-only：只安装 AetherGateway 的本地 Qwen provider，不配置任何 DeepSeek 上游凭据。
 - 不启用 Memory：保留模型、行情、生成和验证能力，但完全不请求 Evolvable User Memory。
 - 不启用受治理知识：保留模型、行情、生成和验证能力，但不请求 AKEP ContextPack。
 - 离线降级：主动关闭可选外部探测，适合局部开发和故障排查，不等同于常规的“关闭 Memory”。
 
-模型、Memory 和 AKEP 知识是三条独立链路，可以自由组合。例如“DeepSeek 官方直连 + 不启用 Memory/AKEP”与“ModelPort Qwen + Memory + AKEP”都受支持。
+模型、Memory 和 AKEP 知识是三条独立链路，可以自由组合。例如“DeepSeek 官方直连 + 不启用 Memory/AKEP”与“AetherGateway Qwen + Memory + AKEP”都受支持。
 
 ## 配置文件职责与优先级
 
@@ -40,9 +40,9 @@ Docker Compose 默认读取进程变量与 `.env`，不会自动读取 `.env.loc
 
 建议不要执行 `cp .env.example .env.local`。示例文件是完整字典，把它整体复制到本机覆盖层会制造大量重复值，之后很难判断哪个文件真正生效。`.env.local` 只保留本机确实需要的几行即可。
 
-布尔开关统一接受 `1/0`；部分解析器也接受 `true/false`、`yes/no`、`on/off`。文档和部署模板统一使用 `1/0`，避免不同工具解释不一致。修改服务端变量后需要重启 SignalFoundry；修改 ModelPort 或 Memory 自身变量后需要重启对应服务。
+布尔开关统一接受 `1/0`；部分解析器也接受 `true/false`、`yes/no`、`on/off`。文档和部署模板统一使用 `1/0`，避免不同工具解释不一致。修改服务端变量后需要重启 SignalFoundry；修改 AetherGateway 或 Memory 自身变量后需要重启对应服务。
 
-浏览器验收默认使用 Playwright 配套 Chromium。已有受管理浏览器时可在 `.env.local` 设置 `QUANTPILOT_CHROMIUM_EXECUTABLE_PATH`；产品页面 E2E、认证烟测、生成页面视觉验收与 benchmark 使用同一配置。CI 继续安装配套浏览器，不依赖本机路径。
+浏览器验收默认使用 Playwright 配套 Chromium。已有受管理浏览器时可在 `.env.local` 设置 `SIGNALFOUNDRY_CHROMIUM_EXECUTABLE_PATH`；产品页面 E2E、认证烟测、生成页面视觉验收与 benchmark 使用同一配置。CI 继续安装配套浏览器，不依赖本机路径。
 
 ## 首次启动
 
@@ -60,26 +60,26 @@ npm run dev
 
 ### 方式对照
 
-| 模式 | SignalFoundry 模型 ID | SignalFoundry 凭据 | ModelPort 是否必需 | 适合场景 |
+| 模式 | SignalFoundry 模型 ID | SignalFoundry 凭据 | AetherGateway 是否必需 | 适合场景 |
 | --- | --- | --- | --- | --- |
-| 本地 Qwen（默认） | `local_qwen:qwen3.5-9b-q5km` | `MODELPORT_API_KEY` | 是 | 日常默认、低成本本地推理 |
-| DeepSeek 经 ModelPort | `deepseek:deepseek-v4-flash` | `MODELPORT_API_KEY` | 是 | 日常线上 DeepSeek、集中密钥/用量/余额治理 |
+| 本地 Qwen（默认） | `local_qwen:qwen3.5-9b-q5km` | `AETHERGATEWAY_API_KEY` | 是 | 日常默认、低成本本地推理 |
+| DeepSeek 经 AetherGateway | `deepseek:deepseek-v4-flash` | `AETHERGATEWAY_API_KEY` | 是 | 日常线上 DeepSeek、集中密钥/用量/余额治理 |
 | DeepSeek 官方直连 | `deepseek-v4-flash` | `DEEPSEEK_API_KEY` | 否 | 绕过网关验证、独立部署或应急路径 |
 
 `local_qwen:qwen3.5-9b-q5km` 始终是代码级默认模型。项目、账号全局设置或 URL 可以显式选择其他已注册模型；浏览器不能提交任意 Base URL 或任意 Provider。
 
-### A. 推荐：Qwen 与 DeepSeek 都经过 ModelPort
+### A. 推荐：Qwen 与 DeepSeek 都经过 AetherGateway
 
-SignalFoundry 的 `.env.local` 只需 ModelPort 客户端 Key：
+SignalFoundry 的 `.env.local` 只需 AetherGateway 客户端 Key：
 
 ```dotenv
-MODELPORT_API_KEY="replace-with-scoped-modelport-client-key"
+AETHERGATEWAY_API_KEY="replace-with-scoped-aethergateway-client-key"
 ```
 
-ModelPort 负责保存和调用真正的上游凭据。其 DeepSeek provider 使用 Anthropic 协议：
+AetherGateway 负责保存和调用真正的上游凭据。其 DeepSeek provider 使用 Anthropic 协议：
 
 ```dotenv
-# 只存在于 ModelPort，不要复制到 SignalFoundry
+# 只存在于 AetherGateway，不要复制到 SignalFoundry
 DEEPSEEK_ANTHROPIC_AUTH_TOKEN="replace-with-deepseek-upstream-key"
 ```
 
@@ -98,20 +98,20 @@ default_model = "deepseek-v4-flash"
 - `GET /v1/models`
 - `POST /v1/chat/completions`
 
-启动 ModelPort 后先检查客户端凭据：
+启动 AetherGateway 后先检查客户端凭据：
 
 ```bash
 set -a
 source .env.local
 set +a
 curl -fsS \
-  -H "Authorization: Bearer ${MODELPORT_API_KEY}" \
+  -H "Authorization: Bearer ${AETHERGATEWAY_API_KEY}" \
   http://127.0.0.1:38082/v1/models
 ```
 
-`401` 表示客户端 Key 无效；`403` 通常表示 Key 有效但 scope 不允许目标 provider/model；连接失败才是 ModelPort 未启动、监听地址不对或网络问题。
+`401` 表示客户端 Key 无效；`403` 通常表示 Key 有效但 scope 不允许目标 provider/model；连接失败才是 AetherGateway 未启动、监听地址不对或网络问题。
 
-### B. DeepSeek 官方直连，不经过 ModelPort
+### B. DeepSeek 官方直连，不经过 AetherGateway
 
 在 SignalFoundry 的忽略文件 `.env.local` 中配置官方 OpenAI-compatible Key：
 
@@ -119,7 +119,7 @@ curl -fsS \
 DEEPSEEK_API_KEY="replace-with-official-deepseek-api-key"
 ```
 
-不要同时配置 `DEEPSEEK_ANTHROPIC_AUTH_TOKEN`。后者是 ModelPort Anthropic provider 的上游变量，SignalFoundry 官方直连 profile 不读取它。
+不要同时配置 `DEEPSEEK_ANTHROPIC_AUTH_TOKEN`。后者是 AetherGateway Anthropic provider 的上游变量，SignalFoundry 官方直连 profile 不读取它。
 
 然后在以下任一入口显式选择 **DeepSeek V4 Flash (Official Direct)**，对应模型 ID 为 `deepseek-v4-flash`：
 
@@ -127,7 +127,7 @@ DEEPSEEK_API_KEY="replace-with-official-deepseek-api-key"
 - 设置页的 AI Agent 默认模型；
 - 已有项目聊天页的模型选择器。
 
-该 profile 固定连接 `https://api.deepseek.com`，不会经过 `127.0.0.1:38082`。如果机器上完全不运行 ModelPort，务必先把账号默认或新项目模型改成官方直连；否则代码级默认 Qwen 仍会尝试访问 ModelPort。这是显式选择保护，不会因为发现了一个 Key 就偷偷改变现有项目的 provider。
+该 profile 固定连接 `https://api.deepseek.com`，不会经过 `127.0.0.1:38082`。如果机器上完全不运行 AetherGateway，务必先把账号默认或新项目模型改成官方直连；否则代码级默认 Qwen 仍会尝试访问 AetherGateway。这是显式选择保护，不会因为发现了一个 Key 就偷偷改变现有项目的 provider。
 
 本地可以直接验证官方端点。下面的请求会产生真实 Token 费用：
 
@@ -141,14 +141,14 @@ curl -fsS https://api.deepseek.com/chat/completions \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"只回复 ok"}],"stream":false}'
 ```
 
-生产环境应由 Secret Manager 注入 `DEEPSEEK_API_KEY`，而不是把真实值写进镜像、仓库或 `.env.production.example`。当前严格生产模板以 ModelPort/Qwen 默认拓扑为基线；若部署为完全 direct-only，发布验收必须额外确认所有默认项目和评测任务都显式选择官方直连。
+生产环境应由 Secret Manager 注入 `DEEPSEEK_API_KEY`，而不是把真实值写进镜像、仓库或 `.env.production.example`。当前严格生产模板以 AetherGateway/Qwen 默认拓扑为基线；若部署为完全 direct-only，发布验收必须额外确认所有默认项目和评测任务都显式选择官方直连。
 
 ### C. 只使用本地 Qwen，不安装 DeepSeek
 
-这是有效的长期拓扑。ModelPort 只启用 `local_qwen` provider，SignalFoundry 使用一个仅允许该 provider/model 的客户端 Key：
+这是有效的长期拓扑。AetherGateway 只启用 `local_qwen` provider，SignalFoundry 使用一个仅允许该 provider/model 的客户端 Key：
 
 ```dotenv
-MODELPORT_API_KEY="replace-with-qwen-only-client-key"
+AETHERGATEWAY_API_KEY="replace-with-qwen-only-client-key"
 ```
 
 不配置以下变量：
@@ -157,7 +157,7 @@ MODELPORT_API_KEY="replace-with-qwen-only-client-key"
 # SignalFoundry 不需要
 # DEEPSEEK_API_KEY=
 
-# ModelPort 不需要
+# AetherGateway 不需要
 # DEEPSEEK_ANTHROPIC_AUTH_TOKEN=
 ```
 
@@ -166,30 +166,30 @@ MODELPORT_API_KEY="replace-with-qwen-only-client-key"
 ### 模型总开关与 Query Rewrite
 
 ```dotenv
-QUANTPILOT_LLM_AGENT_ENABLED=1
-QUANTPILOT_LLM_QUERY_REWRITE_ENABLED=1
-QUANTPILOT_QUERY_REWRITE_LLM_TIMEOUT_MS=15000
-QUANTPILOT_QUERY_REWRITE_LLM_MAX_RETRIES=0
-QUANTPILOT_QUERY_REWRITE_LLM_INVALID_OUTPUT_RETRIES=2
+SIGNALFOUNDRY_LLM_AGENT_ENABLED=1
+SIGNALFOUNDRY_LLM_QUERY_REWRITE_ENABLED=1
+SIGNALFOUNDRY_QUERY_REWRITE_LLM_TIMEOUT_MS=15000
+SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_RETRIES=0
+SIGNALFOUNDRY_QUERY_REWRITE_LLM_INVALID_OUTPUT_RETRIES=2
 ```
 
-正常运行时，Query Rewrite 总是调用项目当前选择的大模型进行语义改写，并保留“大位科技”一类原始实体，不用关键词匹配替代模型理解。设置 `QUANTPILOT_LLM_QUERY_REWRITE_ENABLED=0` 会让量化规划明确失败关闭，不会启用旧的关键词 rewrite。
+正常运行时，Query Rewrite 总是调用项目当前选择的大模型进行语义改写，并保留“大位科技”一类原始实体，不用关键词匹配替代模型理解。设置 `SIGNALFOUNDRY_LLM_QUERY_REWRITE_ENABLED=0` 会让量化规划明确失败关闭，不会启用旧的关键词 rewrite。
 
-设置 `QUANTPILOT_LLM_AGENT_ENABLED=0` 会关闭模型执行能力，workspace 生成等需要 Agent 的任务不可用。它不代表切换 provider，也不是某个模型失败时的自动备用方案。
+设置 `SIGNALFOUNDRY_LLM_AGENT_ENABLED=0` 会关闭模型执行能力，workspace 生成等需要 Agent 的任务不可用。它不代表切换 provider，也不是某个模型失败时的自动备用方案。
 
 ## 受治理知识接入方式
 
 Agent Knowledge Platform 是可选的独立 AKEP HTTP 服务。它只提供已发布、带 Citation 的共享知识，不参与模型路由，也不替代 market-data 或用户 Memory。
 
 ```dotenv
-QUANTPILOT_KNOWLEDGE_ENABLED=1
-QUANTPILOT_KNOWLEDGE_REQUIRED=0
-QUANTPILOT_KNOWLEDGE_API_URL="http://localhost:33005"
-QUANTPILOT_KNOWLEDGE_PURPOSE="quant-research"
-QUANTPILOT_KNOWLEDGE_SPACES="https://knowledge.local/spaces/default"
-QUANTPILOT_KNOWLEDGE_PROJECT_SPACES_ENABLED=1
-QUANTPILOT_KNOWLEDGE_PROJECT_SPACE_BASE_URL="https://knowledge.local/spaces/quantpilot/projects"
-QUANTPILOT_KNOWLEDGE_BEARER_TOKEN="dev-reader"
+SIGNALFOUNDRY_KNOWLEDGE_ENABLED=1
+SIGNALFOUNDRY_KNOWLEDGE_REQUIRED=0
+SIGNALFOUNDRY_KNOWLEDGE_API_URL="http://localhost:33005"
+SIGNALFOUNDRY_KNOWLEDGE_PURPOSE="quant-research"
+SIGNALFOUNDRY_KNOWLEDGE_SPACES="https://knowledge.local/spaces/default"
+SIGNALFOUNDRY_KNOWLEDGE_PROJECT_SPACES_ENABLED=1
+SIGNALFOUNDRY_KNOWLEDGE_PROJECT_SPACE_BASE_URL="https://knowledge.local/spaces/signalfoundry/projects"
+SIGNALFOUNDRY_KNOWLEDGE_BEARER_TOKEN="dev-reader"
 ```
 
 `KNOWLEDGE_SPACES` 是 Consumer 共享知识；开启 project Spaces 后，每个可信 `Project.id` 自动增加一个独立 Space。不要在请求 body 中接收 Space，也不要把多个项目的私有知识放入 shared Space。
@@ -207,19 +207,19 @@ QUANTPILOT_KNOWLEDGE_BEARER_TOKEN="dev-reader"
 | `ENABLED=0` | 否 | 不受影响 | 不需要个性化或尚未部署 Memory |
 | `DEGRADATION_MODE=offline` | 否 | 同时关闭多项外部能力 | 局部开发、网络故障排查 |
 
-`REQUIRED=0` 不等于关闭 Memory。只要 `ENABLED=1`，服务健康时 SignalFoundry 仍会进行 discovery、recall 和可归因反馈。如果要求完全没有 Memory 网络请求，必须设置 `QUANTPILOT_MEMORY_ENABLED=0`。
+`REQUIRED=0` 不等于关闭 Memory。只要 `ENABLED=1`，服务健康时 SignalFoundry 仍会进行 discovery、recall 和可归因反馈。如果要求完全没有 Memory 网络请求，必须设置 `SIGNALFOUNDRY_MEMORY_ENABLED=0`。
 
 ### 启用 Memory，本地可降级
 
 ```dotenv
-QUANTPILOT_MEMORY_ENABLED=1
-QUANTPILOT_MEMORY_REQUIRED=0
-QUANTPILOT_MEMORY_REQUIRE_PRODUCTION_READY=0
-QUANTPILOT_MEMORY_API_URL="http://127.0.0.1:38089"
-QUANTPILOT_MEMORY_TENANT_ID="quantpilot-local"
-QUANTPILOT_MEMORY_TIMEOUT_MS=5000
-QUANTPILOT_MEMORY_RECALL_LIMIT=6
-QUANTPILOT_MEMORY_MAX_CONTEXT_CHARACTERS=2000
+SIGNALFOUNDRY_MEMORY_ENABLED=1
+SIGNALFOUNDRY_MEMORY_REQUIRED=0
+SIGNALFOUNDRY_MEMORY_REQUIRE_PRODUCTION_READY=0
+SIGNALFOUNDRY_MEMORY_API_URL="http://127.0.0.1:38089"
+SIGNALFOUNDRY_MEMORY_TENANT_ID="signalfoundry-local"
+SIGNALFOUNDRY_MEMORY_TIMEOUT_MS=5000
+SIGNALFOUNDRY_MEMORY_RECALL_LIMIT=6
+SIGNALFOUNDRY_MEMORY_MAX_CONTEXT_CHARACTERS=2000
 ```
 
 Memory tenant 是消费应用的硬隔离边界，不是随请求变化的 workspace ID。每个后续接入产品必须使用独立 tenant 和独立 workload token；SignalFoundry 内部 workspace 由服务端写入的 `context.project_id` 选择，并在 capsule 交付前再次过滤。
@@ -227,17 +227,17 @@ Memory tenant 是消费应用的硬隔离边界，不是随请求变化的 works
 本地单用户调试可以临时使用静态 Bearer Token：
 
 ```dotenv
-QUANTPILOT_MEMORY_BEARER_TOKEN="replace-with-local-development-token"
+SIGNALFOUNDRY_MEMORY_BEARER_TOKEN="replace-with-local-development-token"
 ```
 
 多用户生产禁止静态通配 token，必须通过可信 broker 按 tenant、subject 和 purpose 换取短期 JWT：
 
 ```dotenv
-QUANTPILOT_MEMORY_REQUIRE_PRODUCTION_READY=1
-QUANTPILOT_MEMORY_TOKEN_BROKER_URL="https://identity.internal.example.com/memory-token"
-QUANTPILOT_MEMORY_TOKEN_BROKER_CLIENT_ID="quantpilot-production"
-QUANTPILOT_MEMORY_TOKEN_BROKER_CLIENT_SECRET="replace-with-secret"
-QUANTPILOT_MEMORY_TOKEN_AUDIENCE="evolvable-memory-api"
+SIGNALFOUNDRY_MEMORY_REQUIRE_PRODUCTION_READY=1
+SIGNALFOUNDRY_MEMORY_TOKEN_BROKER_URL="https://identity.internal.example.com/memory-token"
+SIGNALFOUNDRY_MEMORY_TOKEN_BROKER_CLIENT_ID="signalfoundry-production"
+SIGNALFOUNDRY_MEMORY_TOKEN_BROKER_CLIENT_SECRET="replace-with-secret"
+SIGNALFOUNDRY_MEMORY_TOKEN_AUDIENCE="evolvable-memory-api"
 ```
 
 完整启动、API 契约、归因和效果验证见 [用户记忆服务接入、使用与效果验证](user-memory-integration.md)。
@@ -247,7 +247,7 @@ QUANTPILOT_MEMORY_TOKEN_AUDIENCE="evolvable-memory-api"
 只需要一行：
 
 ```dotenv
-QUANTPILOT_MEMORY_ENABLED=0
+SIGNALFOUNDRY_MEMORY_ENABLED=0
 ```
 
 此模式下：
@@ -263,39 +263,39 @@ QUANTPILOT_MEMORY_ENABLED=0
 ### 不要用 offline 代替单独关闭 Memory
 
 ```dotenv
-QUANTPILOT_DEGRADATION_MODE=offline
+SIGNALFOUNDRY_DEGRADATION_MODE=offline
 ```
 
-`offline` 会连带关闭或绕过市场 API、Memory、集中观测和 Redis 等可选外部依赖，适合前端/模板局部开发或故障隔离。正常使用模型和行情、只是不要个性化时，应保持 `auto` 或 `strict`，单独设置 `QUANTPILOT_MEMORY_ENABLED=0`。
+`offline` 会连带关闭或绕过市场 API、Memory、集中观测和 Redis 等可选外部依赖，适合前端/模板局部开发或故障隔离。正常使用模型和行情、只是不要个性化时，应保持 `auto` 或 `strict`，单独设置 `SIGNALFOUNDRY_MEMORY_ENABLED=0`。
 
 ## 可直接复制的组合
 
-### 默认 Qwen + ModelPort DeepSeek + Memory + AKEP
+### 默认 Qwen + AetherGateway DeepSeek + Memory + AKEP
 
 ```dotenv
-MODELPORT_API_KEY="replace-with-scoped-modelport-client-key"
-QUANTPILOT_MEMORY_ENABLED=1
-QUANTPILOT_MEMORY_REQUIRED=0
-QUANTPILOT_MEMORY_API_URL="http://127.0.0.1:38089"
-QUANTPILOT_KNOWLEDGE_ENABLED=1
-QUANTPILOT_KNOWLEDGE_REQUIRED=0
-QUANTPILOT_KNOWLEDGE_API_URL="http://127.0.0.1:33005"
-QUANTPILOT_KNOWLEDGE_PURPOSE="quant-research"
-QUANTPILOT_KNOWLEDGE_SPACES="https://knowledge.local/spaces/default,https://knowledge.local/spaces/quantpilot-acceptance"
+AETHERGATEWAY_API_KEY="replace-with-scoped-aethergateway-client-key"
+SIGNALFOUNDRY_MEMORY_ENABLED=1
+SIGNALFOUNDRY_MEMORY_REQUIRED=0
+SIGNALFOUNDRY_MEMORY_API_URL="http://127.0.0.1:38089"
+SIGNALFOUNDRY_KNOWLEDGE_ENABLED=1
+SIGNALFOUNDRY_KNOWLEDGE_REQUIRED=0
+SIGNALFOUNDRY_KNOWLEDGE_API_URL="http://127.0.0.1:33005"
+SIGNALFOUNDRY_KNOWLEDGE_PURPOSE="quant-research"
+SIGNALFOUNDRY_KNOWLEDGE_SPACES="https://knowledge.local/spaces/default,https://knowledge.local/spaces/signalfoundry-acceptance"
 ```
 
 ### 默认 Qwen + 不启用 Memory
 
 ```dotenv
-MODELPORT_API_KEY="replace-with-qwen-client-key"
-QUANTPILOT_MEMORY_ENABLED=0
+AETHERGATEWAY_API_KEY="replace-with-qwen-client-key"
+SIGNALFOUNDRY_MEMORY_ENABLED=0
 ```
 
 ### DeepSeek 官方直连 + 不启用 Memory
 
 ```dotenv
 DEEPSEEK_API_KEY="replace-with-official-deepseek-api-key"
-QUANTPILOT_MEMORY_ENABLED=0
+SIGNALFOUNDRY_MEMORY_ENABLED=0
 ```
 
 保存后还需在 SignalFoundry 中选择 `deepseek-v4-flash`；只配置 Key 不会改变默认 Qwen。
@@ -303,11 +303,11 @@ QUANTPILOT_MEMORY_ENABLED=0
 ### 完全离线的界面/模板开发
 
 ```dotenv
-QUANTPILOT_DEGRADATION_MODE=offline
-QUANTPILOT_MEMORY_ENABLED=0
-QUANTPILOT_MARKET_API_ENABLED=0
-QUANTPILOT_OBSERVABILITY_ENABLED=0
-QUANTPILOT_REDIS_CACHE_ENABLED=0
+SIGNALFOUNDRY_DEGRADATION_MODE=offline
+SIGNALFOUNDRY_MEMORY_ENABLED=0
+SIGNALFOUNDRY_MARKET_API_ENABLED=0
+SIGNALFOUNDRY_OBSERVABILITY_ENABLED=0
+SIGNALFOUNDRY_REDIS_CACHE_ENABLED=0
 ```
 
 该组合不适合验收真实数据投研、Agent 生成或生产 readiness。
@@ -319,24 +319,24 @@ QUANTPILOT_REDIS_CACHE_ENABLED=0
 | 分组 | 关键变量 | 说明 |
 | --- | --- | --- |
 | PostgreSQL/TimescaleDB | `DATABASE_URL`, `POSTGRES_*`, `TIMESCALEDB_IMAGE` | 应用状态、项目、消息、时序数据；Compose 与应用连接信息要同步 |
-| Redis | `REDIS_URL`, `REDIS_NAMESPACE`, `QUANTPILOT_REDIS_*` | 缓存；`REQUIRED=0` 允许降级但不代表关闭 |
-| ClickHouse | `CLICKHOUSE_*`, `QUANTPILOT_CLICKHOUSE_*` | 可选分析存储，默认关闭 |
+| Redis | `REDIS_URL`, `REDIS_NAMESPACE`, `SIGNALFOUNDRY_REDIS_*` | 缓存；`REQUIRED=0` 允许降级但不代表关闭 |
+| ClickHouse | `CLICKHOUSE_*`, `SIGNALFOUNDRY_CLICKHOUSE_*` | 可选分析存储，默认关闭 |
 | Web/预览 | `PORT`, `WEB_PORT`, `NEXT_PUBLIC_APP_URL`, `PREVIEW_PORT_*` | 主站与生成 workspace 预览端口池 |
-| 认证 | `QUANTPILOT_AUTH_*`, `BETTER_AUTH_URL` | 本地可关闭；生产必须强 secret、安全 Cookie、可信 Origin |
-| 管理接口 | `QUANTPILOT_ADMIN_TOKEN`, `QUANTPILOT_MARKET_ADMIN_TOKEN` | 保护 host 级写操作和 market-data 写接口 |
-| 市场数据 | `QUANTPILOT_MARKET_*`, `QUANTPILOT_SCREENER_*` | FastAPI 地址、启动与缓存超时 |
-| Model/Agent | `MODELPORT_API_KEY`, `DEEPSEEK_API_KEY`, `QUANTPILOT_LLM_*`, `PI_AGENT_*` | Provider 凭据、运行预算、超时、lease 和上下文上限 |
-| Memory | `QUANTPILOT_MEMORY_*` | 可选召回、broker、租户和有界上下文 |
-| 受治理知识 | `QUANTPILOT_KNOWLEDGE_*` | AKEP ContextPack、Space、Purpose、Citation、Usage 与 Feedback |
+| 认证 | `SIGNALFOUNDRY_AUTH_*`, `BETTER_AUTH_URL` | 本地可关闭；生产必须强 secret、安全 Cookie、可信 Origin |
+| 管理接口 | `SIGNALFOUNDRY_ADMIN_TOKEN`, `SIGNALFOUNDRY_MARKET_ADMIN_TOKEN` | 保护 host 级写操作和 market-data 写接口 |
+| 市场数据 | `SIGNALFOUNDRY_MARKET_*`, `SIGNALFOUNDRY_SCREENER_*` | FastAPI 地址、启动与缓存超时 |
+| Model/Agent | `AETHERGATEWAY_API_KEY`, `DEEPSEEK_API_KEY`, `SIGNALFOUNDRY_LLM_*`, `PI_AGENT_*` | Provider 凭据、运行预算、超时、lease 和上下文上限 |
+| Memory | `SIGNALFOUNDRY_MEMORY_*` | 可选召回、broker、租户和有界上下文 |
+| 受治理知识 | `SIGNALFOUNDRY_KNOWLEDGE_*` | AKEP ContextPack、Space、Purpose、Citation、Usage 与 Feedback |
 | 观测 | `LOKI_*`, `GRAFANA_*`, `GRAFANA_ALLOY_*` | 集中日志和本地兜底 |
-| 评测 | `QUANTPILOT_EVAL_*`, `QUANTPILOT_REQUIRE_*` | 隐藏集、replay、独立 judge 与发布门禁 |
-| workspace 安全 | `QUANTPILOT_GENERATED_SANDBOX`, `PI_AGENT_WORKSPACE_NAMESPACE` | 生成代码隔离和多实例共享资源边界 |
+| 评测 | `SIGNALFOUNDRY_EVAL_*`, `SIGNALFOUNDRY_REQUIRE_*` | 隐藏集、replay、独立 judge 与发布门禁 |
+| workspace 安全 | `SIGNALFOUNDRY_GENERATED_SANDBOX`, `PI_AGENT_WORKSPACE_NAMESPACE` | 生成代码隔离和多实例共享资源边界 |
 
 PI Agent 的 Token、轮次、工具调用和 lease 默认值已经按完整 workspace 任务校准。除非有运行 trace 证明瓶颈，不要通过无限调大预算掩盖模型不收敛、工具契约错误或终态提交缺失。
 
 generation dispatch 的关键配置是 `PI_AGENT_DISPATCH_LEASE_TTL_MS=120000`、`PI_AGENT_DISPATCH_HEARTBEAT_INTERVAL_MS=30000`、`PI_AGENT_DISPATCH_PENDING_ORPHAN_GRACE_MS=120000` 和 `PI_AGENT_DISPATCH_ENVELOPE_MAX_BYTES=262144`。heartbeat 必须严格小于 TTL；pending 宽限期用于封存“已入库但尚未 claim 就崩溃”的窄窗口；信封上限只约束 provider-neutral replan 输入，不能用来放宽 Secret 边界，credential-shaped 字段无论大小都会拒绝写库。`.data-agent/generation-queue.json` 可删除并由 PostgreSQL job/outbox 重建，不能通过修改该文件取消、重试或完成任务。
 
-独立 Worker 使用 `PI_AGENT_WORKER_CONCURRENCY` 控制单进程并发，用 `PI_AGENT_WORKER_GLOBAL_CONCURRENCY` 控制共享同一 PostgreSQL 的集群总并发；前者不得大于后者。全局容量由 `agent_worker_slots` 的 lease/fencing 实现，相关心跳为 `PI_AGENT_WORKER_SLOT_LEASE_TTL_MS` 与 `PI_AGENT_WORKER_SLOT_HEARTBEAT_INTERVAL_MS`。同一组 TTL/heartbeat 也保护 `agent_worker_instances` 进程注册：Worker 启动时在数据库 advisory lock 下清理过期注册，并核对所有存活进程的 global concurrency；配置不一致会直接退出，避免同一个槽位池被不同容量解释。多个 Worker 会按 actor 分轮选择 Job，但同一 Project 仍由 Mission、generation lease 和 workspace lease 强制单写。本地设置 `PI_AGENT_DISPATCH_MODE=worker` 后，`npm run dev` 默认同时托管一个 Worker；外部已经启动 Worker 时设置 `QUANTPILOT_DEV_MANAGE_GENERATION_WORKER=0`。`/ops-platform` 的“Data Agent 执行池”直接显示存活进程、进程容量、全局槽位、排队用户、最久等待和 24 小时完成/失败量。
+独立 Worker 使用 `PI_AGENT_WORKER_CONCURRENCY` 控制单进程并发，用 `PI_AGENT_WORKER_GLOBAL_CONCURRENCY` 控制共享同一 PostgreSQL 的集群总并发；前者不得大于后者。全局容量由 `agent_worker_slots` 的 lease/fencing 实现，相关心跳为 `PI_AGENT_WORKER_SLOT_LEASE_TTL_MS` 与 `PI_AGENT_WORKER_SLOT_HEARTBEAT_INTERVAL_MS`。同一组 TTL/heartbeat 也保护 `agent_worker_instances` 进程注册：Worker 启动时在数据库 advisory lock 下清理过期注册，并核对所有存活进程的 global concurrency；配置不一致会直接退出，避免同一个槽位池被不同容量解释。多个 Worker 会按 actor 分轮选择 Job，但同一 Project 仍由 Mission、generation lease 和 workspace lease 强制单写。本地设置 `PI_AGENT_DISPATCH_MODE=worker` 后，`npm run dev` 默认同时托管一个 Worker；外部已经启动 Worker 时设置 `SIGNALFOUNDRY_DEV_MANAGE_GENERATION_WORKER=0`。`/ops-platform` 的“Data Agent 执行池”直接显示存活进程、进程容量、全局槽位、排队用户、最久等待和 24 小时完成/失败量。
 
 ## Secret 边界
 
@@ -344,13 +344,13 @@ generation dispatch 的关键配置是 `PI_AGENT_DISPATCH_LEASE_TTL_MS=120000`�
 
 | Secret | 所属服务 | 是否放入 SignalFoundry |
 | --- | --- | --- |
-| `MODELPORT_API_KEY` | ModelPort 签发给 SignalFoundry 的客户端凭据 | 是，`.env.local` 或 Secret Manager |
-| `DEEPSEEK_ANTHROPIC_AUTH_TOKEN` | ModelPort 的 DeepSeek 上游凭据 | 否 |
-| Qwen 上游 Key（如有） | ModelPort 的本地/远端 Qwen provider | 否 |
+| `AETHERGATEWAY_API_KEY` | AetherGateway 签发给 SignalFoundry 的客户端凭据 | 是，`.env.local` 或 Secret Manager |
+| `DEEPSEEK_ANTHROPIC_AUTH_TOKEN` | AetherGateway 的 DeepSeek 上游凭据 | 否 |
+| Qwen 上游 Key（如有） | AetherGateway 的本地/远端 Qwen provider | 否 |
 | `DEEPSEEK_API_KEY` | SignalFoundry 官方直连 profile | 仅启用 direct 模式时 |
-| `QUANTPILOT_MEMORY_BEARER_TOKEN` | 本地单用户 Memory 调试 | 仅开发；生产禁止静态通配 token |
-| `QUANTPILOT_MEMORY_TOKEN_BROKER_CLIENT_SECRET` | SignalFoundry 到可信 broker | 生产 Secret Manager |
-| `QUANTPILOT_KNOWLEDGE_OAUTH_CLIENT_SECRET` | SignalFoundry 到 AKEP OAuth issuer | 生产 Secret Manager |
+| `SIGNALFOUNDRY_MEMORY_BEARER_TOKEN` | 本地单用户 Memory 调试 | 仅开发；生产禁止静态通配 token |
+| `SIGNALFOUNDRY_MEMORY_TOKEN_BROKER_CLIENT_SECRET` | SignalFoundry 到可信 broker | 生产 Secret Manager |
+| `SIGNALFOUNDRY_KNOWLEDGE_OAUTH_CLIENT_SECRET` | SignalFoundry 到 AKEP OAuth issuer | 生产 Secret Manager |
 
 密钥不得出现在 `config/llm.json`、`.env.example` 的真实值、前端请求、截图、生成 workspace、GitHub Actions 日志或故障文档中。日志只记录 provider/model、状态码、trace ID 和用量，不记录 Authorization header。
 
@@ -364,7 +364,7 @@ npm run check:docs
 npm run type-check
 ```
 
-推荐完整拓扑先做 ModelPort/Memory 基础契约联调，再做包含 AKEP 的 30 题体验验收：
+推荐完整拓扑先做 AetherGateway/Memory 基础契约联调，再做包含 AKEP 的 30 题体验验收：
 
 ```bash
 npm run check:integrations
@@ -376,15 +376,15 @@ npm run check:triad-experience
 生产模板校验：
 
 ```bash
-npm run check:production -- --env-file /secure/path/quantpilot.env
+npm run check:production -- --env-file /secure/path/signalfoundry.env
 ```
 
-生产预检采用按启用状态的严格合同：ModelPort 开启时要求 HTTPS、`REQUIRED=1`、受限客户端 Key 以及 organization/project/environment 三层稳定标识；完全关闭时必须同时关闭 `REQUIRED` 并提供官方直连 Key。Memory 开启时要求 `REQUIRED=1`、`REQUIRE_PRODUCTION_READY=1`、独占 tenant、HTTPS Token Broker 和非人类授权探针；Knowledge 开启时要求 `REQUIRED=1`、project Space、HTTPS OAuth client credentials。Memory/Knowledge 均禁止静态 bearer。明确关闭某组件时，其 `REQUIRED` 和生产 readiness 标志也必须显式置 `0`，避免部署意图含混。
+生产预检采用按启用状态的严格合同：AetherGateway 开启时要求 HTTPS、`REQUIRED=1`、受限客户端 Key 以及 organization/project/environment 三层稳定标识；完全关闭时必须同时关闭 `REQUIRED` 并提供官方直连 Key。Memory 开启时要求 `REQUIRED=1`、`REQUIRE_PRODUCTION_READY=1`、独占 tenant、HTTPS Token Broker 和非人类授权探针；Knowledge 开启时要求 `REQUIRED=1`、project Space、HTTPS OAuth client credentials。Memory/Knowledge 均禁止静态 bearer。明确关闭某组件时，其 `REQUIRED` 和生产 readiness 标志也必须显式置 `0`，避免部署意图含混。
 
 常见判断顺序：
 
 1. 先确认项目选择的模型 ID，避免把 `deepseek-v4-flash` 与 `deepseek:deepseek-v4-flash` 混淆。
-2. 再确认凭据归属：ModelPort client key、ModelPort upstream key、官方 direct key 三者不能互换。
+2. 再确认凭据归属：AetherGateway client key、AetherGateway upstream key、官方 direct key 三者不能互换。
 3. 检查目标服务 `/health`、`/readyz` 或 `/v1/models`，区分连接失败、`401` 和 `403`。
 4. 确认 `.env.local` 没有被外部进程环境变量覆盖；容器编排环境优先级最高。
 5. Memory 显示 `disabled` 时先看 `ENABLED`，显示 `unavailable` 才继续查 URL、契约、token 和 production-ready。
@@ -392,4 +392,4 @@ npm run check:production -- --env-file /secure/path/quantpilot.env
 
 ## Skills 持久化目录
 
-`QUANTPILOT_SKILLS_STATE_DIR` 默认为 `./data/skill-catalog`。本地可直接使用默认目录；生产使用独立持久化路径（例如 `/var/lib/quantpilot/skill-catalog`），由 Web 与 Worker 共享，随业务存储备份，不能随代码制品清理。该目录保存在线草稿、完整版本、项目固定记录与操作事件；初始化种子来自仓库内置 `.pi/**` 及运行规则。详细流程见 [Skills 治理](skills-governance.md)。在线校验需要本机 Node、Python 3 和 tar；standalone 制品必须包含平台校验脚本和技能行为用例。
+`SIGNALFOUNDRY_SKILLS_STATE_DIR` 默认为 `./data/skill-catalog`。本地可直接使用默认目录；生产使用独立持久化路径（例如 `/var/lib/signalfoundry/skill-catalog`），由 Web 与 Worker 共享，随业务存储备份，不能随代码制品清理。该目录保存在线草稿、完整版本、项目固定记录与操作事件；初始化种子来自仓库内置 `.pi/**` 及运行规则。详细流程见 [Skills 治理](skills-governance.md)。在线校验需要本机 Node、Python 3 和 tar；standalone 制品必须包含平台校验脚本和技能行为用例。

@@ -16,7 +16,7 @@ import {
 } from './capabilities';
 
 export const FINANCE_DOMAIN_PACK_ID = 'finance.quant';
-export const QUANTPILOT_AGENT_PROFILE_ID = DEFAULT_DATA_AGENT_PROFILE_ID;
+export const SIGNALFOUNDRY_AGENT_PROFILE_ID = DEFAULT_DATA_AGENT_PROFILE_ID;
 
 function operationId(endpoint: string): string {
   const normalized = endpoint
@@ -93,26 +93,26 @@ export const FINANCE_DOMAIN_PACK: DataAgentDomainPack = {
   ],
 };
 
-export const QUANTPILOT_AGENT_PROFILE: DataAgentProfile = {
-  id: QUANTPILOT_AGENT_PROFILE_ID,
+export const SIGNALFOUNDRY_AGENT_PROFILE: DataAgentProfile = {
+  id: SIGNALFOUNDRY_AGENT_PROFILE_ID,
   version: '1.0.0',
   name: 'SignalFoundry Finance Research',
   domainPackIds: [FINANCE_DOMAIN_PACK_ID],
   defaultCapabilityId: DEFAULT_QUANT_CAPABILITY_ID,
   deliveryPackId: 'workspace.next-dashboard',
-  memoryPolicyId: 'quantpilot.personalization',
-  knowledgePolicyId: 'quantpilot.governed-knowledge',
+  memoryPolicyId: 'signalfoundry.personalization',
+  knowledgePolicyId: 'signalfoundry.governed-knowledge',
 };
 
 export function createSignalFoundryDataAgentRegistry(): DataAgentRegistry {
   return new DataAgentRegistry()
     .registerDeliveryPack(NEXT_DASHBOARD_DELIVERY_PACK)
     .registerDomainPack(FINANCE_DOMAIN_PACK)
-    .registerProfile(QUANTPILOT_AGENT_PROFILE);
+    .registerProfile(SIGNALFOUNDRY_AGENT_PROFILE);
 }
 
 export function resolveSignalFoundryDataAgentProfile(
-  profileId = QUANTPILOT_AGENT_PROFILE_ID,
+  profileId = SIGNALFOUNDRY_AGENT_PROFILE_ID,
 ) {
   return createSignalFoundryDataAgentRegistry().resolveProfile(profileId);
 }

@@ -21,7 +21,7 @@ async function checkPiAgent(): Promise<CLIStatus[string]> {
     available: configured,
     error: configured
       ? undefined
-      : '请在 .env.local 中配置 MODELPORT_API_KEY；DEEPSEEK_API_KEY 仅供可选官方直连。',
+      : '请在 .env.local 中配置 AETHERGATEWAY_API_KEY；DEEPSEEK_API_KEY 仅供可选官方直连。',
     models: configuredModels.map((model) => model.id),
   };
 }

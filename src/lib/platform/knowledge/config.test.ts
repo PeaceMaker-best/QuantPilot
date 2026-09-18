@@ -12,21 +12,21 @@ describe('governed knowledge integration config', () => {
     expect(config.purpose).toBe('quant-research');
     expect(config.spaces).toEqual(['https://knowledge.local/spaces/default']);
     expect(config.projectSpacesEnabled).toBe(true);
-    expect(config.projectSpaceBaseUrl).toBe('https://knowledge.local/spaces/quantpilot/projects');
+    expect(config.projectSpaceBaseUrl).toBe('https://knowledge.local/spaces/signalfoundry/projects');
   });
 
   it('accepts an independent AKEP endpoint and bounded scope', () => {
     const config = getKnowledgeIntegrationConfig({
       NODE_ENV: 'development',
-      QUANTPILOT_KNOWLEDGE_ENABLED: '1',
-      QUANTPILOT_KNOWLEDGE_REQUIRED: '1',
-      QUANTPILOT_KNOWLEDGE_API_URL: 'https://knowledge.example/platform',
-      QUANTPILOT_KNOWLEDGE_PURPOSE: 'quant-research',
-      QUANTPILOT_KNOWLEDGE_SPACES: 'https://knowledge.example/spaces/research,https://knowledge.example/spaces/risk',
-      QUANTPILOT_KNOWLEDGE_PROJECT_SPACE_BASE_URL: 'https://knowledge.example/spaces/projects/',
-      QUANTPILOT_KNOWLEDGE_TIMEOUT_MS: '900',
-      QUANTPILOT_KNOWLEDGE_MAX_CONTEXT_CHARACTERS: '6000',
-      QUANTPILOT_KNOWLEDGE_BEARER_TOKEN: 'test-reader',
+      SIGNALFOUNDRY_KNOWLEDGE_ENABLED: '1',
+      SIGNALFOUNDRY_KNOWLEDGE_REQUIRED: '1',
+      SIGNALFOUNDRY_KNOWLEDGE_API_URL: 'https://knowledge.example/platform',
+      SIGNALFOUNDRY_KNOWLEDGE_PURPOSE: 'quant-research',
+      SIGNALFOUNDRY_KNOWLEDGE_SPACES: 'https://knowledge.example/spaces/research,https://knowledge.example/spaces/risk',
+      SIGNALFOUNDRY_KNOWLEDGE_PROJECT_SPACE_BASE_URL: 'https://knowledge.example/spaces/projects/',
+      SIGNALFOUNDRY_KNOWLEDGE_TIMEOUT_MS: '900',
+      SIGNALFOUNDRY_KNOWLEDGE_MAX_CONTEXT_CHARACTERS: '6000',
+      SIGNALFOUNDRY_KNOWLEDGE_BEARER_TOKEN: 'test-reader',
     });
 
     expect(config).toMatchObject({
@@ -45,13 +45,13 @@ describe('governed knowledge integration config', () => {
   it('requires OAuth and HTTPS in production', () => {
     expect(() => getKnowledgeIntegrationConfig({
       NODE_ENV: 'production',
-      QUANTPILOT_KNOWLEDGE_ENABLED: '1',
-      QUANTPILOT_KNOWLEDGE_API_URL: 'https://knowledge.example',
+      SIGNALFOUNDRY_KNOWLEDGE_ENABLED: '1',
+      SIGNALFOUNDRY_KNOWLEDGE_API_URL: 'https://knowledge.example',
     })).toThrow('requires OAuth client credentials');
     expect(() => getKnowledgeIntegrationConfig({
       NODE_ENV: 'production',
-      QUANTPILOT_KNOWLEDGE_ENABLED: '1',
-      QUANTPILOT_KNOWLEDGE_API_URL: 'http://knowledge.example',
+      SIGNALFOUNDRY_KNOWLEDGE_ENABLED: '1',
+      SIGNALFOUNDRY_KNOWLEDGE_API_URL: 'http://knowledge.example',
     })).toThrow('must use HTTPS');
   });
 });

@@ -34,7 +34,7 @@ SignalFoundry 的主平台、市场数据后端、评测平台、策略平台和
 - 数据能力已经有 K 线、覆盖率、ClickHouse 短线筛选，但财报质量、真实资金流、行业中性化和日频因子批处理仍需补齐。
 - 投研日报已经有观察池、报告契约、本地证据采样和企业微信/飞书/钉钉/Discord webhook adapter，后续要接新闻舆情源、LLM 摘要和定时 worker。
 - generation 已由 PostgreSQL job/outbox 和独立 Worker 执行；评测、策略扫描和补数仍需统一暂停、恢复、失败重试与事件语义。
-- 本地 Qwen 与 DeepSeek Anthropic 上游已通过 ModelPort 的限定模型发现、鉴权、流式工具调用和续写验收；ModelPort 已为 OpenAI Chat Completions 应用本地 Qwen 默认思考策略，避免工具任务耗尽隐藏推理预算。Query Rewrite 已升级为 schema v4 LLM-first 合同，保持“大位科技”等原文实体，并在模型不可用时停止规划/预取，不再走关键词语义降级。Evolvable User Memory 已通过隔离 subject 的写入、召回、项目隔离、提示注入和 Outcome 闭环；AKEP 已通过自然语言检索、Citation、Usage 与 Feedback 幂等闭环。服务级固定 30 题体验集连续两轮 60/60 通过；任务级 campaign 进一步以 24 个 Qwen、6 个 ModelPort DeepSeek 的真实 Project 验证 `/act`、Workspace、Validation、Mission receipt、持久预览和任务抽屉，最终 30/30 READY。当前本地长期使用链路已打通；Memory 的持久治理、耐久审计、可信 JWT 和 production profile 仍是生产阻塞项。
+- 本地 Qwen 与 DeepSeek Anthropic 上游已通过 AetherGateway 的限定模型发现、鉴权、流式工具调用和续写验收；AetherGateway 已为 OpenAI Chat Completions 应用本地 Qwen 默认思考策略，避免工具任务耗尽隐藏推理预算。Query Rewrite 已升级为 schema v4 LLM-first 合同，保持“大位科技”等原文实体，并在模型不可用时停止规划/预取，不再走关键词语义降级。Evolvable User Memory 已通过隔离 subject 的写入、召回、项目隔离、提示注入和 Outcome 闭环；AKEP 已通过自然语言检索、Citation、Usage 与 Feedback 幂等闭环。服务级固定 30 题体验集连续两轮 60/60 通过；任务级 campaign 进一步以 24 个 Qwen、6 个 AetherGateway DeepSeek 的真实 Project 验证 `/act`、Workspace、Validation、Mission receipt、持久预览和任务抽屉，最终 30/30 READY。当前本地长期使用链路已打通；Memory 的持久治理、耐久审计、可信 JWT 和 production profile 仍是生产阻塞项。
 
 ## 北极星与产品结果
 
@@ -85,7 +85,7 @@ SignalFoundry 的主平台、市场数据后端、评测平台、策略平台和
 
 2026-09-06 联调继续修复了行情新鲜度查询：未来日历不能覆盖历史休市日的判断，未来日期的行情不能成为当前覆盖率样本；新增 PostgreSQL 回归验证两个场景。认证烟测改为独立用户与项目，不再借用业务项目、恢复管理员密码或清空共享审计/限流记录。Prisma 间接依赖和桌面构建工具链的已知漏洞已修复，全量 npm 审计通过；验证与取数职责拆分、聊天编辑器解耦在接续批次推进。
 
-生成评测进一步发现并修复了沙箱启动问题：沙箱 PATH 只使用实际挂载的 Node 目录和系统工具，修复版本管理器软链接不可见导致的 npm 启动失败；先建立私有 `/tmp`，再挂载工作空间，支持临时目录中的工作空间。真实 namespace 回归验证 npm 可运行、宿主文件和凭据仍不可见。Linux 本机可运行 `QUANTPILOT_TEST_GENERATED_SANDBOX=1 npx vitest run src/lib/security/generated-project-sandbox.test.ts`。运行诊断的 HTTP 探测也增加了总时限，防止不可达端口或持续发送数据的响应阻塞整个 doctor。
+生成评测进一步发现并修复了沙箱启动问题：沙箱 PATH 只使用实际挂载的 Node 目录和系统工具，修复版本管理器软链接不可见导致的 npm 启动失败；先建立私有 `/tmp`，再挂载工作空间，支持临时目录中的工作空间。真实 namespace 回归验证 npm 可运行、宿主文件和凭据仍不可见。Linux 本机可运行 `SIGNALFOUNDRY_TEST_GENERATED_SANDBOX=1 npx vitest run src/lib/security/generated-project-sandbox.test.ts`。运行诊断的 HTTP 探测也增加了总时限，防止不可达端口或持续发送数据的响应阻塞整个 doctor。
 
 本轮验收：完整发布质量门通过，前端 1,250 项、隔离 PostgreSQL 集成 26 项、Python 114 项、桌面/移动端浏览器 4 项及认证生命周期烟测通过；16 个合约评测全部通过，平均分 92。CI 的 PostgreSQL 集成数据库已与合约评测数据库分离，真实 TimescaleDB 容器复测通过。六个基础组件通过本地 Docker 安装；默认股票池 300 个标的补数成功，最新交易日 2026-09-04 覆盖 298 个标的，达到原有 250 个门槛，并同步到 ClickHouse 分析投影。ClickHouse 空表的最新日期改为 `null`，不再显示 1970 年。此次是合约与真实基础设施验收；当前环境缺少模型凭据，未重新执行真实 LLM Mission E2E，也尚未覆盖完整历史数据与 point-in-time 研究。
 
@@ -133,7 +133,7 @@ SignalFoundry 的主平台、市场数据后端、评测平台、策略平台和
 | 生成生命周期准确性 | `needs_clarification`、排队、运行、修复不能被统计成失败 | 健康度按生命周期分层，仅终态任务进入交付成功率；等待输入给出明确下一步 |
 | 生成任务持久化 | 规划和预取也可能并发覆盖，长任务不能依赖请求进程 | 从请求入队开始串行执行，支持 request/run 级取消、幂等、恢复和终态 CAS |
 | 评测真实性分层 | 模板契约通过不等于模型生成通过 | contract 与 DeepSeek E2E 报告明确分开，夜间 E2E 绑定 commit、prompt、Skills 和数据证据 |
-| 长期集成契约门禁 | ModelPort、Memory、AKEP 独立升级后不能靠人工聊天猜兼容性 | `npm run check:integrations` 做基础只读验收；`npm run check:triad-experience` 固定 30 题覆盖语义、回执和组合回答；不共享源码或数据库 |
+| 长期集成契约门禁 | AetherGateway、Memory、AKEP 独立升级后不能靠人工聊天猜兼容性 | `npm run check:integrations` 做基础只读验收；`npm run check:triad-experience` 固定 30 题覆盖语义、回执和组合回答；不共享源码或数据库 |
 | 跨平台项目空间隔离 | 后续多个产品共享基础设施时，不能共享身份、账本、偏好或项目知识 | 已建立 Consumer + Workspace 两层作用域、API Key 绑定、Memory tenant/facet 边界、shared + project Space 白名单和 scope digest；新产品接入必须通过伪造 scope、跨 tenant/Space 与重放负向测试 |
 | Query Rewrite 单一语义入口 | 关键词旁路会让模型配置正确时仍执行错误标的/周期 | schema v4、Provider 边界检查和单测共同保证 LLM-first；Resolver 只核验身份；模型失败时不进入 run plan/预取 |
 | 任务终态与修复竞态 | 中间 Validation 失败不能抢先终止仍在运行的自动修复 | `pending/running/repairing` 始终保持非终态；只有编排完成或失败后才发布 ready/failed；任务级 E2E 原记录重试并复核 30/30 |

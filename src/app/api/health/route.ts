@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 
 export function GET() {
   return NextResponse.json(
-    { ok: true, service: 'quantpilot-web' },
+    { ok: true, service: 'signalfoundry-web' },
     { headers: { 'Cache-Control': 'no-store, max-age=0' } },
   );
 }

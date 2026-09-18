@@ -17,7 +17,7 @@ describe('project LLM config', () => {
       provider: 'openai',
       model: 'local_qwen:qwen3.5-9b-q5km',
       baseUrl: 'http://127.0.0.1:38082/v1',
-      credentialEnv: 'MODELPORT_API_KEY',
+      credentialEnv: 'AETHERGATEWAY_API_KEY',
       agent: { enabled: true },
       queryRewrite: expect.objectContaining({
         enabled: true,
@@ -25,14 +25,14 @@ describe('project LLM config', () => {
         maxRetries: 0,
       }),
     }));
-    expect(JSON.stringify(config)).not.toContain(process.env.MODELPORT_API_KEY ?? '__missing__');
+    expect(JSON.stringify(config)).not.toContain(process.env.AETHERGATEWAY_API_KEY ?? '__missing__');
   });
 
   it('applies bounded operational overrides without changing provider identity', () => {
-    process.env.QUANTPILOT_LLM_AGENT_ENABLED = '0';
-    process.env.QUANTPILOT_LLM_QUERY_REWRITE_ENABLED = 'false';
-    process.env.QUANTPILOT_QUERY_REWRITE_LLM_TIMEOUT_MS = '6500';
-    process.env.QUANTPILOT_QUERY_REWRITE_LLM_MAX_RETRIES = '1';
+    process.env.SIGNALFOUNDRY_LLM_AGENT_ENABLED = '0';
+    process.env.SIGNALFOUNDRY_LLM_QUERY_REWRITE_ENABLED = 'false';
+    process.env.SIGNALFOUNDRY_QUERY_REWRITE_LLM_TIMEOUT_MS = '6500';
+    process.env.SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_RETRIES = '1';
 
     expect(getProjectLlmConfig()).toMatchObject({
       provider: 'openai',
@@ -56,13 +56,13 @@ describe('project LLM config', () => {
     });
   });
 
-  it('routes the normal DeepSeek profile through ModelPort without an upstream key', () => {
+  it('routes the normal DeepSeek profile through AetherGateway without an upstream key', () => {
     expect(getProjectLlmConfig('deepseek:deepseek-v4-flash')).toMatchObject({
       profileId: 'deepseek:deepseek-v4-flash',
       provider: 'openai',
       model: 'deepseek:deepseek-v4-flash',
       baseUrl: 'http://127.0.0.1:38082/v1',
-      credentialEnv: 'MODELPORT_API_KEY',
+      credentialEnv: 'AETHERGATEWAY_API_KEY',
     });
   });
 
@@ -75,7 +75,7 @@ describe('project LLM config', () => {
       provider: 'openai',
       model: 'local_qwen:qwen3.5-9b-q5km',
       baseUrl: 'http://127.0.0.1:38082/v1',
-      credentialEnv: 'MODELPORT_API_KEY',
+      credentialEnv: 'AETHERGATEWAY_API_KEY',
       agent: { enabled: true },
       queryRewrite: {
         enabled: true,
@@ -84,7 +84,7 @@ describe('project LLM config', () => {
       },
     });
     expect(JSON.stringify(config)).not.toContain(
-      process.env.MODELPORT_API_KEY ?? '__missing__',
+      process.env.AETHERGATEWAY_API_KEY ?? '__missing__',
     );
   });
 });

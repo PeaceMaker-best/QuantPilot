@@ -3,12 +3,12 @@ import path from 'path';
 import { assessQuantDataResponse } from '@/lib/domains/finance/data-quality';
 import { type JsonRecord, asRecord } from './values';
 
-const MARKET_API_BASE_URL = process.env.QUANTPILOT_MARKET_API_URL ?? 'http://127.0.0.1:8000';
+const MARKET_API_BASE_URL = process.env.SIGNALFOUNDRY_MARKET_API_URL ?? 'http://127.0.0.1:8000';
 
-const FETCH_TIMEOUT_MS = Number.parseInt(process.env.QUANTPILOT_MARKET_PREFETCH_TIMEOUT_MS ?? '', 10) || 12_000;
+const FETCH_TIMEOUT_MS = Number.parseInt(process.env.SIGNALFOUNDRY_MARKET_PREFETCH_TIMEOUT_MS ?? '', 10) || 12_000;
 
 export const SCREENER_FETCH_TIMEOUT_MS =
-  Number.parseInt(process.env.QUANTPILOT_SCREENER_PREFETCH_TIMEOUT_MS ?? '', 10) || Math.max(FETCH_TIMEOUT_MS, 45_000);
+  Number.parseInt(process.env.SIGNALFOUNDRY_SCREENER_PREFETCH_TIMEOUT_MS ?? '', 10) || Math.max(FETCH_TIMEOUT_MS, 45_000);
 
 export async function fetchJson(
   endpoint: string,

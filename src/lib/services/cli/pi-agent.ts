@@ -85,7 +85,7 @@ import { candidateFromPiAgentRun } from '@/lib/services/pi-agent-candidate';
 import { getProjectLlmConfig } from '@/lib/config/llm';
 import {
   getProjectIntegrationScope,
-  modelPortScopeHeaders,
+  aetherGatewayScopeHeaders,
 } from '@/lib/platform/context/integration-scope';
 import type { PersonalizationCapsule } from '@/lib/platform/memory';
 import type { GovernedKnowledgeCapsule } from '@/lib/platform/knowledge';
@@ -584,7 +584,7 @@ async function executePiAgentPhase(
   const apiKey = process.env[llmConfig.credentialEnv]?.trim();
   const providerLabel = llmConfig.provider === 'deepseek'
     ? 'DeepSeek 官方 API'
-    : 'ModelPort OpenAI-compatible API';
+    : 'AetherGateway OpenAI-compatible API';
   const abortController = new AbortController();
   const totalTimeoutMs = positiveIntegerEnv('PI_AGENT_TIMEOUT_MS', 20 * 60 * 1_000);
   const deadlineAt = Date.now() + totalTimeoutMs;
@@ -737,7 +737,7 @@ async function executePiAgentPhase(
       dashboardSpecReady: preparedAssessment.dashboardSpecReady,
     });
     if (phaseGraph.providerMode === 'model' && !llmConfig.agent.enabled) {
-      throw new Error('项目 LLM Agent 已由 QUANTPILOT_LLM_AGENT_ENABLED 禁用。');
+      throw new Error('项目 LLM Agent 已由 SIGNALFOUNDRY_LLM_AGENT_ENABLED 禁用。');
     }
     if (phaseGraph.providerMode === 'model' && !apiKey) {
       throw new Error(
@@ -1001,7 +1001,7 @@ async function executePiAgentPhase(
             baseUrl: llmConfig.baseUrl,
             headers: {
               'X-Client-App': `SignalFoundry-PI-Agent/${PI_AGENT_VERSION}`,
-              ...modelPortScopeHeaders(integrationScope),
+              ...aetherGatewayScopeHeaders(integrationScope),
             },
             maxRequestBytes: positiveIntegerEnv('PI_AGENT_MAX_REQUEST_BYTES', 2_000_000),
             maxRetries: nonNegativeIntegerEnv('PI_AGENT_PROVIDER_MAX_RETRIES', 2),

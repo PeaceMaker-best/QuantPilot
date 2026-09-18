@@ -52,7 +52,7 @@
       "boundary": "作为规划前唯一语义事实源，由所选 LLM 通过严格 Schema 解析全部自然语言语义，再经原文字面证据、独立标的 Resolver 与确定性安全策略核验；模型不可用时失败关闭。",
       "inputs": [
         "用户原始问题",
-        "用户选定的 ModelPort 或直连 LLM",
+        "用户选定的 AetherGateway 或直连 LLM",
         ".data-agent/workspace.json.runtime 与 Finance Run Plan 无密钥 LLM profile",
         "后端 GET /api/v1/symbols/resolve",
         "用户选择的 capabilityId"

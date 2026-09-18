@@ -5,7 +5,7 @@ const path = require('path');
 const { chromium } = require('playwright');
 
 const rootDir = path.join(__dirname, '..', '..');
-const baseUrl = (process.env.QUANTPILOT_WEB_URL || 'http://localhost:3000').replace(/\/+$/, '');
+const baseUrl = (process.env.SIGNALFOUNDRY_WEB_URL || 'http://localhost:3000').replace(/\/+$/, '');
 const outputDir = path.join(rootDir, 'tmp', 'visual-checks', 'platforms');
 const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 const adminLogin = process.env.PLATFORM_ADMIN_LOGIN || 'admin';
@@ -18,7 +18,7 @@ const routes = [
   { id: 'research', path: '/research-reports', expected: '投研情报中心' },
   { id: 'eval', path: '/eval-platform', expected: '质量总览' },
   { id: 'ops', path: '/ops-platform', expected: '运行治理中心' },
-  { id: 'skills', path: '/skills', expected: 'QUANTPILOT SKILLS MARKET' },
+  { id: 'skills', path: '/skills', expected: 'SIGNALFOUNDRY SKILLS MARKET' },
   { id: 'account-usage', path: '/account/usage', expected: '用量与配额' },
   { id: 'account-security', path: '/account/security', expected: '密码与登录设备' },
 ];
@@ -96,7 +96,7 @@ async function inspectRoute(browser, storageState, route, profile) {
     colorScheme: profile.theme,
   });
   await context.addInitScript((theme) => {
-    localStorage.setItem('quantpilot-color-mode', theme);
+    localStorage.setItem('signalfoundry-color-mode', theme);
   }, profile.theme);
 
   const page = await context.newPage();

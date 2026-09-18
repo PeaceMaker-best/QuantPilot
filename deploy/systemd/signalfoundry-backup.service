@@ -1,0 +1,17 @@
+[Unit]
+Description=Create a verified SignalFoundry release backup
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=signalfoundry
+Group=signalfoundry
+WorkingDirectory=/opt/signalfoundry/current
+EnvironmentFile=/etc/signalfoundry/signalfoundry.env
+Environment=SIGNALFOUNDRY_BACKUP_ROOT=/var/backups/signalfoundry
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/env npm run db:backup:release
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/backups/signalfoundry /var/lib/signalfoundry

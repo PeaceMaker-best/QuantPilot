@@ -33,7 +33,7 @@ function piAgentRuntimeExists() {
 
 console.log('\n🔍 PI Agent · 模型 Provider 配置检查\n');
 console.log('默认模型：local_qwen:qwen3.5-9b-q5km');
-console.log('日常 DeepSeek：deepseek:deepseek-v4-flash（ModelPort）');
+console.log('日常 DeepSeek：deepseek:deepseek-v4-flash（AetherGateway）');
 console.log('可选直连：deepseek-v4-flash（官方 API）');
 
 if (!piAgentRuntimeExists()) {
@@ -43,11 +43,11 @@ if (!piAgentRuntimeExists()) {
 console.log('✅ PI Agent 核心、Provider、Tools 与产品接入层已就绪');
 
 const deepSeekConfigured = Boolean(readEnvValue('DEEPSEEK_API_KEY'));
-const modelPortConfigured = Boolean(readEnvValue('MODELPORT_API_KEY'));
-if (!modelPortConfigured) {
-  console.error('❌ 未配置 ModelPort 客户端凭据，请在 .env.local 中填写 MODELPORT_API_KEY。');
+const aetherGatewayConfigured = Boolean(readEnvValue('AETHERGATEWAY_API_KEY'));
+if (!aetherGatewayConfigured) {
+  console.error('❌ 未配置 AetherGateway 客户端凭据，请在 .env.local 中填写 AETHERGATEWAY_API_KEY。');
   process.exit(1);
 }
-console.log('✅ ModelPort：Qwen 与托管 DeepSeek 客户端凭据已配置');
+console.log('✅ AetherGateway：Qwen 与托管 DeepSeek 客户端凭据已配置');
 console.log(`${deepSeekConfigured ? '✅' : 'ℹ️'} DeepSeek 官方直连：${deepSeekConfigured ? '运行环境凭据已注入' : '未启用（正常）'}`);
 console.log('✅ Provider Base URL 与模型 ID 由 config/llm.json 锁定\n');

@@ -14,8 +14,8 @@ vi.mock('@/lib/services/github', () => ({
 import { AuthorizationError } from '@/lib/auth/authorization';
 import { GET } from './route';
 
-const request = new NextRequest('http://localhost/api/github/check-repo/quantpilot-demo');
-const context = { params: Promise.resolve({ repo_name: 'quantpilot-demo' }) };
+const request = new NextRequest('http://localhost/api/github/check-repo/signalfoundry-demo');
+const context = { params: Promise.resolve({ repo_name: 'signalfoundry-demo' }) };
 
 describe('GET /api/github/check-repo/[repo_name]', () => {
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe('GET /api/github/check-repo/[repo_name]', () => {
 
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ available: true, username: 'octocat' });
-    expect(mocks.checkRepositoryAvailability).toHaveBeenCalledWith('quantpilot-demo');
+    expect(mocks.checkRepositoryAvailability).toHaveBeenCalledWith('signalfoundry-demo');
   });
 
   it('uses conflict for an existing repository', async () => {

@@ -11,7 +11,7 @@ import type {
 import { getProjectLlmConfig } from '../../src/lib/config/llm';
 import {
   LOCAL_QWEN_MODEL_ID,
-  MODELPORT_DEEPSEEK_MODEL_ID,
+  AETHERGATEWAY_DEEPSEEK_MODEL_ID,
 } from '../../src/lib/constants/models';
 import { memoryCompatibilityIssues } from '../../src/lib/platform/memory/compatibility';
 import { getMemoryIntegrationConfig } from '../../src/lib/platform/memory/config';
@@ -96,7 +96,7 @@ async function collectProviderTurn(
   return { responseModel, text, toolCallId, toolName, toolArguments, usage, finishReason };
 }
 
-function createModelPortProvider(apiKey: string, baseUrl: string): OpenAICompatibleProvider {
+function createAetherGatewayProvider(apiKey: string, baseUrl: string): OpenAICompatibleProvider {
   return new OpenAICompatibleProvider({
     providerName: 'openai',
     apiKey,
@@ -161,16 +161,16 @@ async function providerToolRoundTrip(params: {
     reasoning: { enabled: false },
     metadata: { purpose: 'long_term_integration_acceptance' },
   }));
-  assert(turn.responseModel === params.model, 'ModelPort returned an unexpected model ID.');
-  assert(turn.finishReason === 'tool_calls', 'ModelPort model did not finish with a tool call.');
-  assert(turn.toolCallId, 'ModelPort tool call ID is missing.');
-  assert(turn.toolName === 'integration_acceptance', 'ModelPort model called an unexpected tool.');
-  assert(turn.usage, 'ModelPort model did not return token usage.');
-  const toolArguments = jsonRecord(JSON.parse(turn.toolArguments), 'ModelPort tool arguments');
-  assert(toolArguments.status === 'triad-ok', 'ModelPort model returned an invalid acceptance status.');
+  assert(turn.responseModel === params.model, 'AetherGateway returned an unexpected model ID.');
+  assert(turn.finishReason === 'tool_calls', 'AetherGateway model did not finish with a tool call.');
+  assert(turn.toolCallId, 'AetherGateway tool call ID is missing.');
+  assert(turn.toolName === 'integration_acceptance', 'AetherGateway model called an unexpected tool.');
+  assert(turn.usage, 'AetherGateway model did not return token usage.');
+  const toolArguments = jsonRecord(JSON.parse(turn.toolArguments), 'AetherGateway tool arguments');
+  assert(toolArguments.status === 'triad-ok', 'AetherGateway model returned an invalid acceptance status.');
   assert(
     toolArguments.memoryApplied === personalizationExpected,
-    'ModelPort model did not preserve the bounded personalization flag.',
+    'AetherGateway model did not preserve the bounded personalization flag.',
   );
 
   const continuation = await collectProviderTurn(params.provider.complete({
@@ -199,9 +199,9 @@ async function providerToolRoundTrip(params: {
     reasoning: { enabled: false },
     metadata: { purpose: 'long_term_integration_continuation' },
   }));
-  assert(continuation.finishReason === 'stop', 'ModelPort continuation did not finish normally.');
-  assert(continuation.text.trim(), 'ModelPort continuation returned no text.');
-  assert(continuation.usage, 'ModelPort continuation did not return token usage.');
+  assert(continuation.finishReason === 'stop', 'AetherGateway continuation did not finish normally.');
+  assert(continuation.text.trim(), 'AetherGateway continuation returned no text.');
+  assert(continuation.usage, 'AetherGateway continuation did not return token usage.');
   return {
     toolCallId: turn.toolCallId,
     toolName: turn.toolName,
@@ -223,21 +223,21 @@ async function checkQwen() {
   const catalogResponse = await fetchWithTimeout(modelCatalogUrl(llm.baseUrl), {
     headers: { Authorization: `Bearer ${apiKey}` },
   });
-  assert(catalogResponse.ok, `ModelPort model discovery returned HTTP ${catalogResponse.status}.`);
-  const catalog = jsonRecord(await catalogResponse.json(), 'ModelPort model catalog');
-  assert(Array.isArray(catalog.data), 'ModelPort model catalog has no data array.');
+  assert(catalogResponse.ok, `AetherGateway model discovery returned HTTP ${catalogResponse.status}.`);
+  const catalog = jsonRecord(await catalogResponse.json(), 'AetherGateway model catalog');
+  assert(Array.isArray(catalog.data), 'AetherGateway model catalog has no data array.');
   const advertised = catalog.data.some((item) => (
     item !== null && typeof item === 'object' && !Array.isArray(item)
       && (item as Record<string, unknown>).id === llm.model
   ));
-  assert(advertised, `ModelPort does not advertise the configured model ${llm.model}.`);
+  assert(advertised, `AetherGateway does not advertise the configured model ${llm.model}.`);
 
   const rejectedResponse = await fetchWithTimeout(modelCatalogUrl(llm.baseUrl), {
-    headers: { Authorization: 'Bearer quantpilot-deliberately-invalid-integration-key' },
+    headers: { Authorization: 'Bearer signalfoundry-deliberately-invalid-integration-key' },
   });
-  assert(rejectedResponse.status === 401, 'ModelPort did not reject an invalid API key.');
+  assert(rejectedResponse.status === 401, 'AetherGateway did not reject an invalid API key.');
 
-  const provider = createModelPortProvider(apiKey, llm.baseUrl);
+  const provider = createAetherGatewayProvider(apiKey, llm.baseUrl);
   const roundTrip = await providerToolRoundTrip({ provider, model: llm.model });
   const queryController = new AbortController();
   const queryTimeout = setTimeout(() => {
@@ -285,21 +285,21 @@ async function checkQwen() {
   };
 }
 
-async function checkModelPortDeepSeek(apiKey: string) {
-  const llm = getProjectLlmConfig(MODELPORT_DEEPSEEK_MODEL_ID);
-  assert(llm.provider === 'openai', 'ModelPort DeepSeek must use the OpenAI-compatible boundary.');
+async function checkAetherGatewayDeepSeek(apiKey: string) {
+  const llm = getProjectLlmConfig(AETHERGATEWAY_DEEPSEEK_MODEL_ID);
+  assert(llm.provider === 'openai', 'AetherGateway DeepSeek must use the OpenAI-compatible boundary.');
   const catalogResponse = await fetchWithTimeout(modelCatalogUrl(llm.baseUrl), {
     headers: { Authorization: `Bearer ${apiKey}` },
   });
-  assert(catalogResponse.ok, `ModelPort DeepSeek discovery returned HTTP ${catalogResponse.status}.`);
-  const catalog = jsonRecord(await catalogResponse.json(), 'ModelPort model catalog');
-  assert(Array.isArray(catalog.data), 'ModelPort model catalog has no data array.');
+  assert(catalogResponse.ok, `AetherGateway DeepSeek discovery returned HTTP ${catalogResponse.status}.`);
+  const catalog = jsonRecord(await catalogResponse.json(), 'AetherGateway model catalog');
+  assert(Array.isArray(catalog.data), 'AetherGateway model catalog has no data array.');
   assert(catalog.data.some((item) => (
     item !== null && typeof item === 'object' && !Array.isArray(item)
       && (item as Record<string, unknown>).id === llm.model
-  )), `ModelPort does not advertise ${llm.model}.`);
+  )), `AetherGateway does not advertise ${llm.model}.`);
 
-  const provider = createModelPortProvider(apiKey, llm.baseUrl);
+  const provider = createAetherGatewayProvider(apiKey, llm.baseUrl);
   const roundTrip = await providerToolRoundTrip({ provider, model: llm.model });
   return {
     provider: llm.provider,
@@ -346,7 +346,7 @@ async function checkMemoryClosedLoop(params: {
   provider: OpenAICompatibleProvider;
   model: string;
 }) {
-  const actorUserId = option('subject') || 'quantpilot-long-term-integration-check-v1';
+  const actorUserId = option('subject') || 'signalfoundry-long-term-integration-check-v1';
   const runId = randomUUID();
   const service = await import('../../src/lib/platform/memory/service');
   const { prisma } = await import('../../src/lib/db/client');
@@ -436,7 +436,7 @@ async function checkMemoryClosedLoop(params: {
 
 async function main() {
   const qwen = await checkQwen();
-  const deepseek = await checkModelPortDeepSeek(qwen.apiKey);
+  const deepseek = await checkAetherGatewayDeepSeek(qwen.apiKey);
   const memory = await checkMemoryReadOnly();
   const projectId = option('project');
   const otherProjectId = option('other-project');
@@ -453,12 +453,12 @@ async function main() {
   console.log(JSON.stringify({
     status: 'ok',
     checkedAt: new Date().toISOString(),
-    quantpilot: {
+    signalfoundry: {
       defaultModel: qwen.llm.model,
       providerBoundary: 'openai-compatible',
       memoryBoundary: 'personal-memory-port',
     },
-    modelport: {
+    aethergateway: {
       qwen: qwen.summary,
       deepseek,
     },

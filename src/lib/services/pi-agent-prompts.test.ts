@@ -245,7 +245,7 @@ describe('PI Agent SignalFoundry prompts', () => {
       taskPacket: '# SignalFoundry Task Packet\n用户需求：生成研究看板',
       skillContext: '# PI Agent Skill Capsules\n使用真实数据',
       personalizationContext: JSON.stringify({
-        memories: [{ key: 'output.detail_level', value: unsafeValue, context: { product: 'quantpilot' } }],
+        memories: [{ key: 'output.detail_level', value: unsafeValue, context: { product: 'signalfoundry' } }],
       }),
       initialDashboardContract: null,
     });

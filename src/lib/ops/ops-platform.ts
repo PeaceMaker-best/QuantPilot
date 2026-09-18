@@ -114,7 +114,7 @@ export interface OpsPlatformDashboard {
 const ROOT = path.resolve(/*turbopackIgnore: true*/ process.cwd());
 const MARKET_API_BASE_URL = getServiceRawEndpoint('market-data') || 'http://127.0.0.1:8000';
 const LOKI_BASE_URL = getServiceRawEndpoint('loki') || 'http://127.0.0.1:33100';
-const LOKI_QUERY = (process.env.LOKI_QUERY || '{app="quantpilot"}').replace(/\\"/g, '"');
+const LOKI_QUERY = (process.env.LOKI_QUERY || '{app="signalfoundry"}').replace(/\\"/g, '"');
 const GRAFANA_BASE_URL = getServiceRawEndpoint('grafana') || `http://127.0.0.1:${process.env.GRAFANA_PORT || '33012'}`;
 
 function relativePath(filePath: string): string {
@@ -499,7 +499,7 @@ async function inspectLokiMetadata(): Promise<OpsLogSource> {
 }
 
 async function collectLogSources(includeEntries: boolean): Promise<OpsLogSource[]> {
-  const latestEvalLog = await findLatestLogFile(path.join(ROOT, 'tmp', 'quantpilot-eval-queue', 'logs'));
+  const latestEvalLog = await findLatestLogFile(path.join(ROOT, 'tmp', 'signalfoundry-eval-queue', 'logs'));
   const sources: Array<{ id: string; label: string; filePath: string | null }> = [
     { id: 'next-dev', label: '前端 Next.js dev', filePath: path.join(ROOT, '.next', 'dev', 'logs', 'next-development.log') },
     { id: 'frontend-runtime', label: '前端启动脚本', filePath: path.join(ROOT, 'tmp', 'runtime', 'frontend.log') },
@@ -806,9 +806,9 @@ export async function getOpsPlatformDashboard(params: {
   const projectCount = await countDirectoryItems(projectsDir, 'project-');
   const missingRequired = [
     process.env.DATABASE_URL?.trim() ? null : 'DATABASE_URL',
-    process.env.MODELPORT_API_KEY?.trim() ? null : 'MODELPORT_API_KEY',
-    marketApi.enabled && !process.env.QUANTPILOT_MARKET_API_URL?.trim()
-      ? 'QUANTPILOT_MARKET_API_URL'
+    process.env.AETHERGATEWAY_API_KEY?.trim() ? null : 'AETHERGATEWAY_API_KEY',
+    marketApi.enabled && !process.env.SIGNALFOUNDRY_MARKET_API_URL?.trim()
+      ? 'SIGNALFOUNDRY_MARKET_API_URL'
       : null,
   ].filter((item): item is string => Boolean(item));
   const lokiSource = logSources.find((source) => source.id === 'loki');
@@ -843,19 +843,19 @@ export async function getOpsPlatformDashboard(params: {
       id: 'agent-cli',
       label: 'PI Agent',
       status: agentRuntimeInstalled && (
-        process.env.MODELPORT_API_KEY?.trim() || process.env.DEEPSEEK_API_KEY?.trim()
+        process.env.AETHERGATEWAY_API_KEY?.trim() || process.env.DEEPSEEK_API_KEY?.trim()
       ) ? 'ok' : 'failed',
       summary: agentRuntimeInstalled
-        ? process.env.MODELPORT_API_KEY?.trim() || process.env.DEEPSEEK_API_KEY?.trim()
+        ? process.env.AETHERGATEWAY_API_KEY?.trim() || process.env.DEEPSEEK_API_KEY?.trim()
           ? '模型 Provider 凭据已配置'
           : '执行引擎已安装，Provider 凭据未配置'
         : '本地执行引擎缺失',
-      detail: '默认通过 ModelPort 使用本地 Qwen 与托管 DeepSeek，保留可选官方直连。',
+      detail: '默认通过 AetherGateway 使用本地 Qwen 与托管 DeepSeek，保留可选官方直连。',
       actions: [
         agentRuntimeInstalled ? null : '运行 npm install 安装本地执行引擎。',
-        process.env.MODELPORT_API_KEY?.trim() || process.env.DEEPSEEK_API_KEY?.trim()
+        process.env.AETHERGATEWAY_API_KEY?.trim() || process.env.DEEPSEEK_API_KEY?.trim()
           ? null
-          : '在 .env.local 中配置 MODELPORT_API_KEY。',
+          : '在 .env.local 中配置 AETHERGATEWAY_API_KEY。',
       ].filter((item): item is string => Boolean(item)),
     },
     {
@@ -947,7 +947,7 @@ export async function getOpsPlatformDashboard(params: {
       detail: marketHealth.ok && marketRegistry.ok
         ? `响应 ${Math.max(marketHealth.ms, marketRegistry.ms)}ms`
         : marketHealth.error ?? marketRegistry.error ?? undefined,
-      actions: marketApi.enabled && !marketHealth.ok ? ['进入 services/market-data 后运行 uv run quantpilot-market-api。'] : [],
+      actions: marketApi.enabled && !marketHealth.ok ? ['进入 services/market-data 后运行 uv run signalfoundry-market-api。'] : [],
     },
     {
       id: 'workspace-storage',

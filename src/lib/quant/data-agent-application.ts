@@ -21,13 +21,13 @@ import {
 import {
   createSignalFoundryDataAgentRegistry,
   getFinanceSkillCapabilityDescriptor,
-  QUANTPILOT_AGENT_PROFILE_ID,
+  SIGNALFOUNDRY_AGENT_PROFILE_ID,
 } from '@/lib/domains/finance';
 import { serializeQuantVisualizationTemplate } from '@/lib/domains/finance/visualization-templates';
 import { FINANCE_RUN_PLAN_RELATIVE_PATH } from '@/lib/domains/finance/workspace-artifacts';
 
 const financeAdapter: DataAgentApplicationAdapter = {
-  profileId: QUANTPILOT_AGENT_PROFILE_ID,
+  profileId: SIGNALFOUNDRY_AGENT_PROFILE_ID,
   async provisionProject(input, application) {
     const capability = getQuantCapability(application.capability.id);
     const visualizationTemplate = serializeQuantVisualizationTemplate(capability.id);

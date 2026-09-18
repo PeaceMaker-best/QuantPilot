@@ -45,11 +45,11 @@ function AIAgentsTab({
   const configuredModelIds = new Set(status?.models ?? []);
 
   const connectionForModel = (model: CLIOption["models"][number]) =>
-    model.runtime === "modelport"
+    model.runtime === "aethergateway"
       ? {
-          label: "ModelPort OpenAI-compatible",
+          label: "AetherGateway OpenAI-compatible",
           endpoint: "127.0.0.1:38082/v1",
-          credentialEnv: "MODELPORT_API_KEY",
+          credentialEnv: "AETHERGATEWAY_API_KEY",
         }
       : {
           label: "DeepSeek 官方 API",
@@ -63,7 +63,7 @@ function AIAgentsTab({
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Multi-provider runtime</p>
           <h3 className="mt-2 text-lg font-semibold text-slate-950">PI Agent 模型接入</h3>
-          <p className="mt-1 text-sm text-slate-600">本机 Qwen 为默认模型；日常 DeepSeek 经 ModelPort，官方直连仅作为可选备用。</p>
+          <p className="mt-1 text-sm text-slate-600">本机 Qwen 为默认模型；日常 DeepSeek 经 AetherGateway，官方直连仅作为可选备用。</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -146,7 +146,7 @@ function AIAgentsTab({
         )}
         {!configured && (
           <div className="border-t border-amber-100 bg-amber-50 px-5 py-4 text-sm text-amber-800">
-            在 <code className="rounded bg-white/70 px-1.5 py-0.5">.env.local</code> 配置 <code className="rounded bg-white/70 px-1.5 py-0.5">MODELPORT_API_KEY</code> 后重启项目；官方直连的 <code className="rounded bg-white/70 px-1.5 py-0.5">DEEPSEEK_API_KEY</code> 保持可选且默认不配置。
+            在 <code className="rounded bg-white/70 px-1.5 py-0.5">.env.local</code> 配置 <code className="rounded bg-white/70 px-1.5 py-0.5">AETHERGATEWAY_API_KEY</code> 后重启项目；官方直连的 <code className="rounded bg-white/70 px-1.5 py-0.5">DEEPSEEK_API_KEY</code> 保持可选且默认不配置。
           </div>
         )}
       </div>

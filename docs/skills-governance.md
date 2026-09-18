@@ -124,11 +124,11 @@ http://localhost:3000/skills
 
 只具有旧 tgz、没有历史运行规则的版本标记为不支持完整回退；系统不会拿当前规则冒充历史行为。第一次在线维护会保存当时所有内置技能的完整基线。操作者来自认证上下文；历史未记录的操作者显示未登记。
 
-在线编辑和平台发布需要 `platform.settings.manage`；已认证浏览器还须通过同源校验。没有认证会话的本地管理仍按 `QUANTPILOT_ADMIN_TOKEN` 与开发环境回环限制处理。
+在线编辑和平台发布需要 `platform.settings.manage`；已认证浏览器还须通过同源校验。没有认证会话的本地管理仍按 `SIGNALFOUNDRY_ADMIN_TOKEN` 与开发环境回环限制处理。
 
 ### 持久化与故障恢复
 
-`QUANTPILOT_SKILLS_STATE_DIR` 默认为 `./data/skill-catalog`，生产须配置在不可变代码发布目录之外，所有处理相同项目的 Web/Worker 实例共享该目录并纳入备份。它包含：
+`SIGNALFOUNDRY_SKILLS_STATE_DIR` 默认为 `./data/skill-catalog`，生产须配置在不可变代码发布目录之外，所有处理相同项目的 Web/Worker 实例共享该目录并纳入备份。它包含：
 
 - `state.json`：当前发布、草稿、项目安装和维护事件的唯一提交点，使用临时文件、fsync 和 rename 更新。
 - `images/<sha256>/`：源码、包、注册信息、lock、changelog 与运行规则的完整快照；执行前核验 manifest 和选中技能的内容。

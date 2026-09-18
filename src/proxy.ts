@@ -14,12 +14,12 @@ const PUBLIC_BRAND_ASSET_PATHS = new Set([
   '/favicon.png',
   '/icon.svg',
   '/manifest.webmanifest',
-  '/quantpilot-mark.svg',
+  '/signalfoundry-mark.svg',
   '/SignalFoundry_Icon.png',
 ]);
 
 function isPublicBrandAssetPath(pathname: string): boolean {
-  return PUBLIC_BRAND_ASSET_PATHS.has(pathname) || /^\/icons\/quantpilot-(?:192|512)\.png$/.test(pathname);
+  return PUBLIC_BRAND_ASSET_PATHS.has(pathname) || /^\/icons\/signalfoundry-(?:192|512)\.png$/.test(pathname);
 }
 
 function loginRedirect(request: NextRequest): NextResponse {
@@ -42,7 +42,7 @@ function isSameOriginMutation(request: NextRequest): boolean {
     const requestOrigin = host ? `${protocol}://${host}` : request.nextUrl.origin;
     return origin === request.nextUrl.origin || origin === requestOrigin;
   }
-  return request.headers.get('x-quantpilot-request') === 'same-origin';
+  return request.headers.get('x-signalfoundry-request') === 'same-origin';
 }
 
 export async function proxy(request: NextRequest) {
@@ -120,6 +120,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|generated/quantpilot-tailwind.css).*)',
+    '/((?!_next/static|_next/image|favicon.ico|generated/signalfoundry-tailwind.css).*)',
   ],
 };

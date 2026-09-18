@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   DEEPSEEK_MODEL_ID,
   LOCAL_QWEN_MODEL_ID,
-  MODELPORT_DEEPSEEK_MODEL_ID,
+  AETHERGATEWAY_DEEPSEEK_MODEL_ID,
   PI_AGENT_MODEL_DEFINITIONS,
   getPiAgentModelDefinition,
   normalizePiAgentModelId,
@@ -15,10 +15,10 @@ describe('PI Agent model registry', () => {
     expect(normalizePiAgentModelId('qwen3.5-9b-q5km')).toBe(LOCAL_QWEN_MODEL_ID);
     expect(PI_AGENT_MODEL_DEFINITIONS.map((model) => model.id)).toEqual([
       LOCAL_QWEN_MODEL_ID,
-      MODELPORT_DEEPSEEK_MODEL_ID,
+      AETHERGATEWAY_DEEPSEEK_MODEL_ID,
       DEEPSEEK_MODEL_ID,
     ]);
-    expect(normalizePiAgentModelId('deepseek')).toBe(MODELPORT_DEEPSEEK_MODEL_ID);
+    expect(normalizePiAgentModelId('deepseek')).toBe(AETHERGATEWAY_DEEPSEEK_MODEL_ID);
     expect(normalizePiAgentModelId('deepseek-v4-flash')).toBe(DEEPSEEK_MODEL_ID);
   });
 

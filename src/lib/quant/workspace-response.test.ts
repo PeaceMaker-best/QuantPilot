@@ -5,7 +5,7 @@ import type { QuantRunPlan } from '@/lib/domains/finance/workspace';
 import { getProjectLlmConfig } from '@/lib/config/llm';
 import {
   createSignalFoundryDataAgentRegistry,
-  QUANTPILOT_AGENT_PROFILE_ID,
+  SIGNALFOUNDRY_AGENT_PROFILE_ID,
 } from '@/lib/domains/finance';
 import {
   buildWorkspaceProgressMessage,
@@ -19,7 +19,7 @@ function plan(overrides: Partial<QuantRunPlan> = {}): QuantRunPlan {
     status: 'planned',
     capabilityId: 'stock_diagnosis',
     composition: createSignalFoundryDataAgentRegistry().resolveCapability(
-      QUANTPILOT_AGENT_PROFILE_ID,
+      SIGNALFOUNDRY_AGENT_PROFILE_ID,
       'stock_diagnosis',
     ).composition,
     llm: getProjectLlmConfig(),

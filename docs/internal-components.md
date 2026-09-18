@@ -16,7 +16,7 @@
 | 数据库入口 | `src/lib/db/`、`prisma/` | Prisma 管理的主业务表 |
 | 市场数据服务 | `services/market-data/` | 行情、K 线、财务、公告、补数、基础组件和回测 API |
 | SQL 初始化 | `sqls/` | `quant` schema、TimescaleDB hypertable、股票池和基础组件表 |
-| Skills 版本 | `.pi/skills/` 与 `QUANTPILOT_SKILLS_STATE_DIR` | 仓库提供基线，持久化目录保存草稿、完整发布快照和项目版本；执行按平台固定版本核验，不从 workspace 镜像发现能力 |
+| Skills 版本 | `.pi/skills/` 与 `SIGNALFOUNDRY_SKILLS_STATE_DIR` | 仓库提供基线，持久化目录保存草稿、完整发布快照和项目版本；执行按平台固定版本核验，不从 workspace 镜像发现能力 |
 | 生成工作空间 | `data/projects/` | 每个 AI 生成项目的源码、数据、证据和验证报告 |
 | 本地基础设施 | `docker-compose.yml`、`deploy/observability/` | TimescaleDB、Redis、Loki、Grafana 和 Alloy |
 | 脚本 | `scripts/` | 启动、构建、检查、数据库迁移、评测和 skill 打包 |
@@ -132,11 +132,11 @@ Skills 是 Agent 的项目内能力手册。它们不是简单提示词，而是
 降级配置位于 `src/lib/config/degradation.ts`，对应 `.env` 中的：
 
 ```env
-QUANTPILOT_DEGRADATION_MODE=auto
-QUANTPILOT_DATABASE_ENABLED=1
-QUANTPILOT_MARKET_API_ENABLED=1
-QUANTPILOT_OBSERVABILITY_ENABLED=1
-QUANTPILOT_REDIS_CACHE_ENABLED=1
+SIGNALFOUNDRY_DEGRADATION_MODE=auto
+SIGNALFOUNDRY_DATABASE_ENABLED=1
+SIGNALFOUNDRY_MARKET_API_ENABLED=1
+SIGNALFOUNDRY_OBSERVABILITY_ENABLED=1
+SIGNALFOUNDRY_REDIS_CACHE_ENABLED=1
 ```
 
 三种模式：

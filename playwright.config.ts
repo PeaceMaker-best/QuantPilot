@@ -18,9 +18,9 @@ export default defineConfig({
   use: {
     baseURL: 'http://127.0.0.1:3107',
     trace: 'retain-on-failure',
-    extraHTTPHeaders: { 'x-quantpilot-admin-token': 'isolated-skills-browser-test' },
+    extraHTTPHeaders: { 'x-signalfoundry-admin-token': 'isolated-skills-browser-test' },
     screenshot: 'only-on-failure',
-    launchOptions: { executablePath: process.env.QUANTPILOT_CHROMIUM_EXECUTABLE_PATH || undefined },
+    launchOptions: { executablePath: process.env.SIGNALFOUNDRY_CHROMIUM_EXECUTABLE_PATH || undefined },
   },
   projects: [
     { name: 'desktop', use: { viewport: { width: 1440, height: 900 }, colorScheme: 'light' } },
@@ -31,14 +31,14 @@ export default defineConfig({
     wait: { stdout: /Ready in/ },
     timeout: 60_000,
     env: {
-      QUANTPILOT_AUTH_MODE: 'disabled',
-      QUANTPILOT_DEGRADATION_MODE: 'offline',
-      QUANTPILOT_DATABASE_ENABLED: '0',
-      QUANTPILOT_KNOWLEDGE_ENABLED: '0',
+      SIGNALFOUNDRY_AUTH_MODE: 'disabled',
+      SIGNALFOUNDRY_DEGRADATION_MODE: 'offline',
+      SIGNALFOUNDRY_DATABASE_ENABLED: '0',
+      SIGNALFOUNDRY_KNOWLEDGE_ENABLED: '0',
       DATABASE_URL: 'postgresql://unused:unused@127.0.0.1:1/unused?connect_timeout=1',
       PROJECTS_DIR: './tmp/e2e-product-health-projects',
-      QUANTPILOT_SKILLS_STATE_DIR: './tmp/e2e-skills-state',
-      QUANTPILOT_ADMIN_TOKEN: 'isolated-skills-browser-test',
+      SIGNALFOUNDRY_SKILLS_STATE_DIR: './tmp/e2e-skills-state',
+      SIGNALFOUNDRY_ADMIN_TOKEN: 'isolated-skills-browser-test',
     },
   },
 });

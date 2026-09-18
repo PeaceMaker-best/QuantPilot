@@ -51,7 +51,7 @@
 | 文档 | 解决的问题 |
 | --- | --- |
 | [配置指南](configuration.md) | 环境文件优先级、模型选择、组件开关与持久化目录 |
-| [模型 Provider](model-providers.md) | ModelPort、官方直连、凭据、模型目录与连接排查 |
+| [模型 Provider](model-providers.md) | AetherGateway、官方直连、凭据、模型目录与连接排查 |
 | [基础设施](infrastructure.md) | 本地 Docker 组件、端口、数据卷、日志与降级模式 |
 | [认证、权限与会话](authentication.md) | 用户生命周期、项目权限、配额、会话与审计 |
 | [用户记忆接入](user-memory-integration.md) | Memory 的启用、隔离、召回、反馈与效果验证 |

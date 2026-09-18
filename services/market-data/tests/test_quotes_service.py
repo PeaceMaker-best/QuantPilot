@@ -3,9 +3,9 @@ from __future__ import annotations
 import asyncio
 from datetime import UTC, datetime
 
-from quantpilot_market_data.cache import MarketDataCache
-from quantpilot_market_data.contracts.quotes import KlineResponse, SymbolResolveResult
-from quantpilot_market_data.services import quotes
+from signalfoundry_market_data.cache import MarketDataCache
+from signalfoundry_market_data.contracts.quotes import KlineResponse, SymbolResolveResult
+from signalfoundry_market_data.services import quotes
 
 
 class DummyProvider:

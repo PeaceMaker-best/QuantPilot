@@ -81,7 +81,7 @@ export const auth = betterAuth({
   },
   advanced: {
     useSecureCookies: config.secureCookies,
-    cookiePrefix: 'quantpilot',
+    cookiePrefix: 'signalfoundry',
     defaultCookieAttributes: {
       httpOnly: true,
       secure: config.secureCookies,

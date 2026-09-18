@@ -33,7 +33,7 @@ import {
 } from '@/lib/data-agent';
 import {
   createSignalFoundryDataAgentRegistry,
-  QUANTPILOT_AGENT_PROFILE_ID,
+  SIGNALFOUNDRY_AGENT_PROFILE_ID,
 } from '@/lib/domains/finance/agent-profile';
 import {
   FINANCE_QUERY_REWRITE_RELATIVE_PATH,
@@ -597,7 +597,7 @@ export async function writeInitialRunPlan(params: {
         : 'planned',
     capabilityId: capability.id,
     composition: createSignalFoundryDataAgentRegistry().resolveCapability(
-      QUANTPILOT_AGENT_PROFILE_ID,
+      SIGNALFOUNDRY_AGENT_PROFILE_ID,
       capability.id,
     ).composition,
     llm,

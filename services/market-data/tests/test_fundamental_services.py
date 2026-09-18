@@ -5,9 +5,9 @@ from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
 
-from quantpilot_market_data.cache import MarketDataCache
-from quantpilot_market_data.contracts.fundamentals import FinancialReportItem
-from quantpilot_market_data.services.fundamentals import (
+from signalfoundry_market_data.cache import MarketDataCache
+from signalfoundry_market_data.contracts.fundamentals import FinancialReportItem
+from signalfoundry_market_data.services.fundamentals import (
     get_financial_reports,
     get_fundamental_indicators,
 )

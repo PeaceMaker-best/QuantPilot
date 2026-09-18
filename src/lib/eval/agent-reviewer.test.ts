@@ -13,7 +13,7 @@ describe('agent semantic reviewer', () => {
   it('computes scores only with citations to provided evidence', () => {
     expect(parse(result())).toMatchObject({
       verdict: 'passed', score: 90,
-      reviewer: { promptVersion: 'quantpilot-agent-review-prompt-v2', independentFromGenerator: false },
+      reviewer: { promptVersion: 'signalfoundry-agent-review-prompt-v2', independentFromGenerator: false },
       evidenceValidation: { status: 'verified', issues: [] },
     });
   });

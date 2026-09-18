@@ -18,13 +18,13 @@ export const SKILL_AGENT_TARGETS = {
   "claude-code": {
     label: "Claude Code",
     directory: ".claude",
-    receipt: "quantpilot-installed-skills.json",
+    receipt: "signalfoundry-installed-skills.json",
     runtimeVerified: false,
   },
   codex: {
     label: "Codex",
     directory: ".agents",
-    receipt: "quantpilot-installed-skills.json",
+    receipt: "signalfoundry-installed-skills.json",
     runtimeVerified: false,
   },
 } as const;

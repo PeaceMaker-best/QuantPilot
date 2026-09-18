@@ -9,7 +9,7 @@
 | 服务 | 默认地址 | 代码位置 | 责任 |
 | --- | --- | --- | --- |
 | Next.js 主应用 API | `http://localhost:3000/api/*` | `src/app/api/` | 项目、聊天、设置、评测、skills、运维和页面聚合数据 |
-| 市场数据服务 | `http://127.0.0.1:8000/api/v1/*` | `services/market-data/src/quantpilot_market_data/api.py` | 行情、K 线、财务、公告、补数、基础组件、股票池和回测 |
+| 市场数据服务 | `http://127.0.0.1:8000/api/v1/*` | `services/market-data/src/signalfoundry_market_data/api.py` | 行情、K 线、财务、公告、补数、基础组件、股票池和回测 |
 | 用户记忆服务 | `http://127.0.0.1:38089/*` | 独立 `evolvable-user-memory` 仓库 | 偏好证据、不可变修订、召回 Trace、上下文投影和可归因 Outcome |
 | 预览工作空间 | `http://localhost:4100+` | `data/projects/project-*` | AI 生成项目的 Next.js 预览，不承载平台状态 |
 
@@ -273,7 +273,7 @@ fundamental 复用 financials；单个上游故障不会丢弃其他成功区块
 | 成交额/换手率为空 | `/api/v1/ingestion/baostock/history` | `quant.stock_bars.amount`、`turnover` |
 | 板块资金慢 | `/api/v1/research/sector-capital-flow` | Redis TTL、后端是否全量扫描 |
 | 生成页面验证失败 | `/api/chat/[project_id]/act` | `.data-agent/validation.json`、`data_file/final/dashboard-data.json` |
-| 评测队列卡住 | `/api/evals` | `eval_queue_items`、`tmp/quantpilot-eval-queue/` |
+| 评测队列卡住 | `/api/evals` | `eval_queue_items`、`tmp/signalfoundry-eval-queue/` |
 
 ## 维护规则
 

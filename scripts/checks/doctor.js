@@ -61,27 +61,27 @@ function envFlag(key, fallback) {
 }
 
 function degradationConfig() {
-  const modeValue = readEnvValue('QUANTPILOT_DEGRADATION_MODE').trim().toLowerCase();
+  const modeValue = readEnvValue('SIGNALFOUNDRY_DEGRADATION_MODE').trim().toLowerCase();
   const mode = modeValue === 'strict' || modeValue === 'offline' ? modeValue : 'auto';
   const offline = mode === 'offline';
   const strict = mode === 'strict';
   return {
     mode,
     database: {
-      enabled: envFlag('QUANTPILOT_DATABASE_ENABLED', true),
-      required: offline ? false : envFlag('QUANTPILOT_DATABASE_REQUIRED', true),
+      enabled: envFlag('SIGNALFOUNDRY_DATABASE_ENABLED', true),
+      required: offline ? false : envFlag('SIGNALFOUNDRY_DATABASE_REQUIRED', true),
     },
     marketApi: {
-      enabled: offline ? false : envFlag('QUANTPILOT_MARKET_API_ENABLED', true),
-      required: !offline && envFlag('QUANTPILOT_MARKET_API_REQUIRED', strict),
+      enabled: offline ? false : envFlag('SIGNALFOUNDRY_MARKET_API_ENABLED', true),
+      required: !offline && envFlag('SIGNALFOUNDRY_MARKET_API_REQUIRED', strict),
     },
     memory: {
-      enabled: offline ? false : envFlag('QUANTPILOT_MEMORY_ENABLED', true),
-      required: !offline && envFlag('QUANTPILOT_MEMORY_REQUIRED', false),
+      enabled: offline ? false : envFlag('SIGNALFOUNDRY_MEMORY_ENABLED', true),
+      required: !offline && envFlag('SIGNALFOUNDRY_MEMORY_REQUIRED', false),
     },
     observability: {
-      enabled: offline ? false : envFlag('QUANTPILOT_OBSERVABILITY_ENABLED', true),
-      required: !offline && envFlag('QUANTPILOT_OBSERVABILITY_REQUIRED', strict),
+      enabled: offline ? false : envFlag('SIGNALFOUNDRY_OBSERVABILITY_ENABLED', true),
+      required: !offline && envFlag('SIGNALFOUNDRY_OBSERVABILITY_REQUIRED', strict),
     },
   };
 }
@@ -180,7 +180,7 @@ function summarizeCommandFailure(result) {
 }
 
 function latestBenchmarkReport() {
-  const reportsDir = path.join(ROOT, 'tmp', 'quantpilot-benchmark-reports');
+  const reportsDir = path.join(ROOT, 'tmp', 'signalfoundry-benchmark-reports');
   if (!fs.existsSync(reportsDir)) return null;
   const files = fs
     .readdirSync(reportsDir)
@@ -210,7 +210,7 @@ async function main() {
   const degradation = degradationConfig();
 
   const packageJson = readJson(path.join(ROOT, 'package.json'));
-  addCheck('项目配置', packageJson?.name === 'quantpilot' ? 'ok' : 'fail', packageJson ? `${packageJson.name}@${packageJson.version}` : '无法读取 package.json。');
+  addCheck('项目配置', packageJson?.name === 'signalfoundry' ? 'ok' : 'fail', packageJson ? `${packageJson.name}@${packageJson.version}` : '无法读取 package.json。');
   addCheck(
     '降级配置',
     'ok',
@@ -238,21 +238,21 @@ async function main() {
     deepSeekApiKey ? 'ok' : 'warn',
     deepSeekApiKey ? 'deepseek-v4-flash · 官方直连 · API Key 已配置' : 'DEEPSEEK_API_KEY 未配置。',
     [
-      deepSeekApiKey ? null : '可选官方直连未配置；日常 DeepSeek 应通过 ModelPort 使用。',
+      deepSeekApiKey ? null : '可选官方直连未配置；日常 DeepSeek 应通过 AetherGateway 使用。',
       '可选模型固定为 deepseek-v4-flash，Base URL 固定为 https://api.deepseek.com。',
     ]
   );
 
-  const modelPortApiKey = readEnvValue('MODELPORT_API_KEY');
+  const aetherGatewayApiKey = readEnvValue('AETHERGATEWAY_API_KEY');
   addCheck(
-    'ModelPort Provider',
-    modelPortApiKey ? 'ok' : 'warn',
-    modelPortApiKey
-      ? '本地 Qwen + 托管 DeepSeek · ModelPort 客户端凭据已配置'
-      : '默认模型不可用：MODELPORT_API_KEY 未配置。',
+    'AetherGateway Provider',
+    aetherGatewayApiKey ? 'ok' : 'warn',
+    aetherGatewayApiKey
+      ? '本地 Qwen + 托管 DeepSeek · AetherGateway 客户端凭据已配置'
+      : '默认模型不可用：AETHERGATEWAY_API_KEY 未配置。',
     [
-      modelPortApiKey ? null : '在 .env.local 中填写 ModelPort 客户端 API Key。',
-      '模型与 Base URL 固定为受控 ModelPort profiles · http://127.0.0.1:38082/v1。',
+      aetherGatewayApiKey ? null : '在 .env.local 中填写 AetherGateway 客户端 API Key。',
+      '模型与 Base URL 固定为受控 AetherGateway profiles · http://127.0.0.1:38082/v1。',
     ]
   );
 
@@ -280,14 +280,14 @@ async function main() {
       '量化数据后端 :8000',
       backend.ok ? 'ok' : unavailableStatus(degradation.marketApi),
       backend.ok ? `HTTP ${backend.statusCode}` : '未连接，已使用数据源注册表/本地数据兜底。',
-      backend.ok ? [] : ['进入 services/market-data 后运行 uv run quantpilot-market-api。']
+      backend.ok ? [] : ['进入 services/market-data 后运行 uv run signalfoundry-market-api。']
     );
   } else {
     addCheck('量化数据后端 :8000', 'warn', '已按降级配置停用。', ['策略平台和业务知识中心会优先展示本地/内置兜底数据。']);
   }
 
   if (degradation.memory.enabled) {
-    const memoryBaseUrl = (readEnvValue('QUANTPILOT_MEMORY_API_URL') || 'http://127.0.0.1:38089')
+    const memoryBaseUrl = (readEnvValue('SIGNALFOUNDRY_MEMORY_API_URL') || 'http://127.0.0.1:38089')
       .replace(/\/$/, '');
     const [discovery, ready] = await Promise.all([
       requestJson(`${memoryBaseUrl}/`, 2500),
@@ -381,7 +381,7 @@ async function main() {
       failed ? [`失败用例：${failed}`] : []
     );
   } else {
-    addCheck('最近评测报告', 'warn', '未找到 tmp/quantpilot-benchmark-reports/report-*.json。', ['运行 npm run benchmark:quant:contract 可生成报告。']);
+    addCheck('最近评测报告', 'warn', '未找到 tmp/signalfoundry-benchmark-reports/report-*.json。', ['运行 npm run benchmark:quant:contract 可生成报告。']);
   }
 
   if (FULL_CHECKS) {

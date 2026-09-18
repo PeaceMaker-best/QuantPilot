@@ -6,12 +6,12 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from quantpilot_market_data import backtest_experiments
-from quantpilot_market_data.cache import MarketDataCache
-from quantpilot_market_data.contracts.quotes import KlineResponse
-from quantpilot_market_data.replay_backtest import replay_backtest
-from quantpilot_market_data.routers.backtests import create_backtest_router
-from quantpilot_market_data.services import backtests
+from signalfoundry_market_data import backtest_experiments
+from signalfoundry_market_data.cache import MarketDataCache
+from signalfoundry_market_data.contracts.quotes import KlineResponse
+from signalfoundry_market_data.replay_backtest import replay_backtest
+from signalfoundry_market_data.routers.backtests import create_backtest_router
+from signalfoundry_market_data.services import backtests
 
 
 def test_routes_preserve_replayable_responses_across_cache_and_engine_changes(

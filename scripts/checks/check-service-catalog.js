@@ -61,7 +61,7 @@ function validateCatalog() {
     'market-data',
     'memory',
     'knowledge',
-    'modelport',
+    'aethergateway',
     'timescaledb',
     'redis',
     'clickhouse',

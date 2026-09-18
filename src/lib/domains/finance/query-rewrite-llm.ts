@@ -19,7 +19,7 @@ import {
 import { getProjectLlmConfig } from '@/lib/config/llm';
 import {
   getProjectIntegrationScope,
-  modelPortScopeHeaders,
+  aetherGatewayScopeHeaders,
 } from '@/lib/platform/context/integration-scope';
 import type {
   QuantQuerySemanticRewriteInput,
@@ -458,24 +458,24 @@ export async function rewriteQuantQuerySemanticsWithConfiguredProvider(
     headers: {
       'X-Client-App': 'SignalFoundry-Query-Rewrite/4',
       ...(llmConfig.provider === 'openai'
-        ? modelPortScopeHeaders(getProjectIntegrationScope(input.projectId ?? 'system-query-rewrite'))
+        ? aetherGatewayScopeHeaders(getProjectIntegrationScope(input.projectId ?? 'system-query-rewrite'))
         : {}),
     },
-    maxRequestBytes: positiveIntegerEnv('QUANTPILOT_QUERY_REWRITE_LLM_MAX_REQUEST_BYTES', 32_000),
-    maxTextChars: positiveIntegerEnv('QUANTPILOT_QUERY_REWRITE_LLM_MAX_TEXT_CHARS', 4_000),
+    maxRequestBytes: positiveIntegerEnv('SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_REQUEST_BYTES', 32_000),
+    maxTextChars: positiveIntegerEnv('SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_TEXT_CHARS', 4_000),
     maxReasoningChars: positiveIntegerEnv(
-      'QUANTPILOT_QUERY_REWRITE_LLM_MAX_REASONING_CHARS',
+      'SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_REASONING_CHARS',
       4_000,
     ),
     maxToolArgumentChars: positiveIntegerEnv(
-      'QUANTPILOT_QUERY_REWRITE_LLM_MAX_TOOL_ARGUMENT_CHARS',
+      'SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_TOOL_ARGUMENT_CHARS',
       8_000,
     ),
     maxToolCalls: 1,
     maxRetries: Math.min(
       1,
       nonNegativeIntegerEnv(
-        'QUANTPILOT_QUERY_REWRITE_LLM_MAX_RETRIES',
+        'SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_RETRIES',
         llmConfig.queryRewrite.maxRetries,
       ),
     ),
@@ -493,7 +493,7 @@ export async function rewriteQuantQuerySemanticsWithConfiguredProvider(
     const semanticAttempts = 1 + Math.min(
       2,
       nonNegativeIntegerEnv(
-        'QUANTPILOT_QUERY_REWRITE_LLM_INVALID_OUTPUT_RETRIES',
+        'SIGNALFOUNDRY_QUERY_REWRITE_LLM_INVALID_OUTPUT_RETRIES',
         model === LOCAL_QWEN_MODEL_ID ? 2 : 0,
       ),
     );

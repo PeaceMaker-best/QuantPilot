@@ -58,16 +58,16 @@ uv sync --frozen --project services/market-data --extra baostock --extra akshare
 
 | 接入方式 | 配置 | 模型选择 |
 | --- | --- | --- |
-| ModelPort | `MODELPORT_API_KEY=你的受限客户端凭据` | 默认使用本地 Qwen，也可选择经 ModelPort 的 DeepSeek |
+| AetherGateway | `AETHERGATEWAY_API_KEY=你的受限客户端凭据` | 默认使用本地 Qwen，也可选择经 AetherGateway 的 DeepSeek |
 | DeepSeek 官方直连 | `DEEPSEEK_API_KEY=你的官方凭据` | 在设置或新建项目时显式选择 `DeepSeek V4 Flash (Official Direct)` |
 
-模型目录以 [config/llm.json](config/llm.json) 为准。ModelPort 模式需要单独运行 ModelPort 和所选模型服务；本仓库的 Compose 不会安装它们。直连模式不需要 ModelPort，但填写 Key 不会自动切换已有项目的模型。
+模型目录以 [config/llm.json](config/llm.json) 为准。AetherGateway 模式需要单独运行 AetherGateway 和所选模型服务；本仓库的 Compose 不会安装它们。直连模式不需要 AetherGateway，但填写 Key 不会自动切换已有项目的模型。
 
 如果暂未接入用户记忆或知识服务，可在 `.env.local` 关闭这两项独立集成：
 
 ```dotenv
-QUANTPILOT_MEMORY_ENABLED=0
-QUANTPILOT_KNOWLEDGE_ENABLED=0
+SIGNALFOUNDRY_MEMORY_ENABLED=0
+SIGNALFOUNDRY_KNOWLEDGE_ENABLED=0
 ```
 
 完整模型配置、文件优先级和可选组件接入见 [配置指南](docs/configuration.md)。模型不可用时，研究规划会明确失败，不会用关键词解析冒充模型结果。
@@ -89,7 +89,7 @@ mkdir -p .next tmp/runtime
 docker compose up -d --wait
 ```
 
-提前创建日志采集的挂载目录，避免 Docker 以 root 身份创建后影响本机写入。这组命令会增加 ClickHouse、Loki、Grafana 和 Alloy。ClickHouse 查询还需设置 `QUANTPILOT_CLICKHOUSE_ENABLED=1`；数据同步和降级规则见 [市场数据服务](services/market-data/README.md)。组件端口、数据卷和日志配置见 [基础设施指南](docs/infrastructure.md)。
+提前创建日志采集的挂载目录，避免 Docker 以 root 身份创建后影响本机写入。这组命令会增加 ClickHouse、Loki、Grafana 和 Alloy。ClickHouse 查询还需设置 `SIGNALFOUNDRY_CLICKHOUSE_ENABLED=1`；数据同步和降级规则见 [市场数据服务](services/market-data/README.md)。组件端口、数据卷和日志配置见 [基础设施指南](docs/infrastructure.md)。
 
 `db:init` 用于本地首次初始化。生产发布使用版本化迁移，流程见 [生产发布手册](docs/release-runbook.md)。
 
@@ -136,7 +136,7 @@ Skills Market 提供内置可信技能的搜索筛选、能力详情、兼容性
 
 PI Agent 的实际执行读取平台保存的项目版本。Claude Code / Codex 当前验证范围是目录安装与完整性，真实工具调用兼容性仍需单独验收。
 
-在线草稿、发布快照和安装记录保存在 `QUANTPILOT_SKILLS_STATE_DIR`，默认 `data/skill-catalog/`。生产环境应将其放在代码发布目录之外，由 Web 和 Worker 共享并备份。操作与权限说明见 [Skills 治理](docs/skills-governance.md)，编写方法见 [Skills 教程](docs/learning/07-skills-authoring.md)。
+在线草稿、发布快照和安装记录保存在 `SIGNALFOUNDRY_SKILLS_STATE_DIR`，默认 `data/skill-catalog/`。生产环境应将其放在代码发布目录之外，由 Web 和 Worker 共享并备份。操作与权限说明见 [Skills 治理](docs/skills-governance.md)，编写方法见 [Skills 教程](docs/learning/07-skills-authoring.md)。
 
 ## 开发与验证
 

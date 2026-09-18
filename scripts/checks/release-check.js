@@ -12,15 +12,15 @@ const includeProduction = process.argv.includes('--production');
 const generateContractEvidence = process.argv.includes('--eval-contract');
 const includeE2eEvidence = process.argv.includes('--e2e-evidence');
 const evidenceModel = String(
-  process.env.QUANTPILOT_RELEASE_EVIDENCE_MODEL
-  || process.env.QUANTPILOT_EVAL_MODEL
+  process.env.SIGNALFOUNDRY_RELEASE_EVIDENCE_MODEL
+  || process.env.SIGNALFOUNDRY_EVAL_MODEL
   || 'local_qwen:qwen3.5-9b-q5km',
 ).trim();
 
 if (includeE2eEvidence) {
   const credentialName = evidenceModel === 'deepseek-v4-flash'
     ? 'DEEPSEEK_API_KEY'
-    : 'MODELPORT_API_KEY';
+    : 'AETHERGATEWAY_API_KEY';
   if (!String(process.env[credentialName] || '').trim()) {
     console.error(
       `[release] ${credentialName} is required for ${evidenceModel} release evidence; refusing to skip live PI Agent E2E.`,

@@ -251,7 +251,7 @@ export async function withExtractedSkillArchive(
   }
 
   const workDir = await fs.mkdtemp(
-    path.join(os.tmpdir(), "quantpilot-skill-upload-"),
+    path.join(os.tmpdir(), "signalfoundry-skill-upload-"),
   );
   const archivePath = path.join(
     workDir,

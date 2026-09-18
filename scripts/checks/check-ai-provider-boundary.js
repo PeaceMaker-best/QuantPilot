@@ -6,7 +6,7 @@ const { execFileSync } = require('child_process');
 
 const ROOT = process.cwd();
 const DEEPSEEK_MODEL = 'deepseek-v4-flash';
-const MODELPORT_DEEPSEEK_MODEL = 'deepseek:deepseek-v4-flash';
+const AETHERGATEWAY_DEEPSEEK_MODEL = 'deepseek:deepseek-v4-flash';
 const OFFICIAL_BASE_URL = 'https://api.deepseek.com';
 const LOCAL_MODEL = 'local_qwen:qwen3.5-9b-q5km';
 const LOCAL_BASE_URL = 'http://127.0.0.1:38082/v1';
@@ -24,7 +24,7 @@ function pass(message) {
   console.log(`✅ ${message}`);
 }
 
-console.log('\n🔒 PI Agent AI 接入边界检查：ModelPort 日常路由 + 可选 DeepSeek 官方直连\n');
+console.log('\n🔒 PI Agent AI 接入边界检查：AetherGateway 日常路由 + 可选 DeepSeek 官方直连\n');
 
 const retiredFrameworkToken = ['mo', 'agent'].join('');
 const repositoryFiles = execFileSync(
@@ -55,20 +55,20 @@ if (retiredFrameworkHits.length > 0) {
 }
 
 const envExample = read('.env.example');
-if (!/^MODELPORT_API_KEY=/m.test(envExample)) {
-  fail('.env.example 必须声明 MODELPORT_API_KEY');
+if (!/^AETHERGATEWAY_API_KEY=/m.test(envExample)) {
+  fail('.env.example 必须声明 AETHERGATEWAY_API_KEY');
 } else if (/^(?:DEEPSEEK_API_KEY|LOCAL_OPENAI_API_KEY)=/m.test(envExample)) {
   fail('.env.example 不得鼓励在 SignalFoundry 本地保存上游 DeepSeek 或旧本地 Provider Key');
 } else {
-  pass('SignalFoundry 只声明 ModelPort 客户端凭据；上游 DeepSeek Key 留在 ModelPort');
+  pass('SignalFoundry 只声明 AetherGateway 客户端凭据；上游 DeepSeek Key 留在 AetherGateway');
 }
 
 for (const key of [
-  'QUANTPILOT_LLM_AGENT_ENABLED',
-  'QUANTPILOT_LLM_QUERY_REWRITE_ENABLED',
-  'QUANTPILOT_QUERY_REWRITE_LLM_TIMEOUT_MS',
-  'QUANTPILOT_QUERY_REWRITE_LLM_MAX_RETRIES',
-  'QUANTPILOT_QUERY_REWRITE_LLM_INVALID_OUTPUT_RETRIES',
+  'SIGNALFOUNDRY_LLM_AGENT_ENABLED',
+  'SIGNALFOUNDRY_LLM_QUERY_REWRITE_ENABLED',
+  'SIGNALFOUNDRY_QUERY_REWRITE_LLM_TIMEOUT_MS',
+  'SIGNALFOUNDRY_QUERY_REWRITE_LLM_MAX_RETRIES',
+  'SIGNALFOUNDRY_QUERY_REWRITE_LLM_INVALID_OUTPUT_RETRIES',
 ]) {
   if (!new RegExp(`^${key}=`, 'm').test(envExample)) {
     fail(`.env.example 必须声明 LLM 配置：${key}`);
@@ -77,7 +77,7 @@ for (const key of [
 
 const llmConfig = JSON.parse(read('config/llm.json'));
 const deepSeekProfile = llmConfig?.profiles?.[DEEPSEEK_MODEL];
-const modelPortDeepSeekProfile = llmConfig?.profiles?.[MODELPORT_DEEPSEEK_MODEL];
+const aetherGatewayDeepSeekProfile = llmConfig?.profiles?.[AETHERGATEWAY_DEEPSEEK_MODEL];
 const localProfile = llmConfig?.profiles?.[LOCAL_MODEL];
 if (
   llmConfig?.schemaVersion !== 1 ||
@@ -86,27 +86,27 @@ if (
   deepSeekProfile?.model !== DEEPSEEK_MODEL ||
   deepSeekProfile?.baseUrl !== OFFICIAL_BASE_URL ||
   deepSeekProfile?.credentialEnv !== 'DEEPSEEK_API_KEY' ||
-  modelPortDeepSeekProfile?.provider !== 'openai' ||
-  modelPortDeepSeekProfile?.model !== MODELPORT_DEEPSEEK_MODEL ||
-  modelPortDeepSeekProfile?.baseUrl !== LOCAL_BASE_URL ||
-  modelPortDeepSeekProfile?.credentialEnv !== 'MODELPORT_API_KEY' ||
+  aetherGatewayDeepSeekProfile?.provider !== 'openai' ||
+  aetherGatewayDeepSeekProfile?.model !== AETHERGATEWAY_DEEPSEEK_MODEL ||
+  aetherGatewayDeepSeekProfile?.baseUrl !== LOCAL_BASE_URL ||
+  aetherGatewayDeepSeekProfile?.credentialEnv !== 'AETHERGATEWAY_API_KEY' ||
   localProfile?.provider !== 'openai' ||
   localProfile?.model !== LOCAL_MODEL ||
   localProfile?.baseUrl !== LOCAL_BASE_URL ||
-  localProfile?.credentialEnv !== 'MODELPORT_API_KEY' ||
+  localProfile?.credentialEnv !== 'AETHERGATEWAY_API_KEY' ||
   typeof deepSeekProfile?.agent?.enabled !== 'boolean' ||
-  typeof modelPortDeepSeekProfile?.agent?.enabled !== 'boolean' ||
+  typeof aetherGatewayDeepSeekProfile?.agent?.enabled !== 'boolean' ||
   typeof localProfile?.agent?.enabled !== 'boolean' ||
   deepSeekProfile?.queryRewrite?.enabled !== true ||
-  modelPortDeepSeekProfile?.queryRewrite?.enabled !== true ||
+  aetherGatewayDeepSeekProfile?.queryRewrite?.enabled !== true ||
   localProfile?.queryRewrite?.enabled !== true ||
   deepSeekProfile?.queryRewrite?.timeoutMs !== 15_000 ||
-  modelPortDeepSeekProfile?.queryRewrite?.timeoutMs !== 15_000 ||
+  aetherGatewayDeepSeekProfile?.queryRewrite?.timeoutMs !== 15_000 ||
   localProfile?.queryRewrite?.timeoutMs !== 15_000
 ) {
-  fail('config/llm.json 必须提供 Qwen、ModelPort DeepSeek 与官方直连三个锁定 profiles');
+  fail('config/llm.json 必须提供 Qwen、AetherGateway DeepSeek 与官方直连三个锁定 profiles');
 } else {
-  pass('中央 LLM profiles、Qwen 默认值、ModelPort DeepSeek 与官方直连配置完整');
+  pass('中央 LLM profiles、Qwen 默认值、AetherGateway DeepSeek 与官方直连配置完整');
 }
 
 for (const key of [
@@ -130,12 +130,12 @@ if (!modelRegistry.includes(`DEEPSEEK_MODEL_ID = '${DEEPSEEK_MODEL}'`)) {
   fail(`模型注册表必须包含本地模型 ${LOCAL_MODEL}`);
 } else if (!modelRegistry.includes(`LOCAL_OPENAI_BASE_URL = '${LOCAL_BASE_URL}'`)) {
   fail(`模型注册表必须锁定本地地址 ${LOCAL_BASE_URL}`);
-} else if (!modelRegistry.includes(`MODELPORT_DEEPSEEK_MODEL_ID = '${MODELPORT_DEEPSEEK_MODEL}'`)) {
-  fail(`模型注册表必须包含 ModelPort DeepSeek 模型 ${MODELPORT_DEEPSEEK_MODEL}`);
+} else if (!modelRegistry.includes(`AETHERGATEWAY_DEEPSEEK_MODEL_ID = '${AETHERGATEWAY_DEEPSEEK_MODEL}'`)) {
+  fail(`模型注册表必须包含 AetherGateway DeepSeek 模型 ${AETHERGATEWAY_DEEPSEEK_MODEL}`);
 } else if (!modelRegistry.includes('PI_AGENT_DEFAULT_MODEL: PiAgentModelId = LOCAL_QWEN_MODEL_ID')) {
   fail(`PI Agent 默认模型必须为 ${LOCAL_MODEL}`);
 } else {
-  pass('本地 Qwen 默认模型、ModelPort DeepSeek 与官方直连地址均已锁定');
+  pass('本地 Qwen 默认模型、AetherGateway DeepSeek 与官方直连地址均已锁定');
 }
 
 const requiredRuntimeFiles = [

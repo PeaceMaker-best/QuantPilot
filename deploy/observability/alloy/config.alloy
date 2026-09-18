@@ -3,13 +3,13 @@ logging {
   format = "logfmt"
 }
 
-discovery.docker "quantpilot" {
+discovery.docker "signalfoundry" {
   host             = "unix:///var/run/docker.sock"
   refresh_interval = "10s"
 }
 
-discovery.relabel "quantpilot_docker" {
-  targets = discovery.docker.quantpilot.targets
+discovery.relabel "signalfoundry_docker" {
+  targets = discovery.docker.signalfoundry.targets
 
   rule {
     source_labels = ["__meta_docker_container_name"]
@@ -33,21 +33,21 @@ discovery.relabel "quantpilot_docker" {
   }
 }
 
-loki.source.docker "quantpilot" {
+loki.source.docker "signalfoundry" {
   host             = "unix:///var/run/docker.sock"
-  targets          = discovery.docker.quantpilot.targets
-  relabel_rules    = discovery.relabel.quantpilot_docker.rules
+  targets          = discovery.docker.signalfoundry.targets
+  relabel_rules    = discovery.relabel.signalfoundry_docker.rules
   refresh_interval = "10s"
-  forward_to       = [loki.process.quantpilot.receiver]
+  forward_to       = [loki.process.signalfoundry.receiver]
 }
 
-loki.source.file "quantpilot_files" {
+loki.source.file "signalfoundry_files" {
   targets = [
-    {__path__ = "/var/log/quantpilot/tmp/runtime/*.log", job = "quantpilot-runtime", source = "file"},
-    {__path__ = "/var/log/quantpilot/tmp/quantpilot-eval-queue/logs/*.log", job = "quantpilot-eval", source = "file"},
-    {__path__ = "/var/log/quantpilot/.next/dev/logs/*.log", job = "quantpilot-next", source = "file"},
+    {__path__ = "/var/log/signalfoundry/tmp/runtime/*.log", job = "signalfoundry-runtime", source = "file"},
+    {__path__ = "/var/log/signalfoundry/tmp/signalfoundry-eval-queue/logs/*.log", job = "signalfoundry-eval", source = "file"},
+    {__path__ = "/var/log/signalfoundry/.next/dev/logs/*.log", job = "signalfoundry-next", source = "file"},
   ]
-  forward_to = [loki.process.quantpilot.receiver]
+  forward_to = [loki.process.signalfoundry.receiver]
 
   file_match {
     enabled     = true
@@ -55,10 +55,10 @@ loki.source.file "quantpilot_files" {
   }
 }
 
-loki.process "quantpilot" {
+loki.process "signalfoundry" {
   stage.static_labels {
     values = {
-      app = "quantpilot",
+      app = "signalfoundry",
       env = "local",
     }
   }

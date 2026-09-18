@@ -8,7 +8,7 @@ const { spawn } = require('node:child_process');
 
 const root = process.cwd();
 const standalone = path.join(root, '.next', 'standalone');
-const port = Number(process.env.QUANTPILOT_STANDALONE_SMOKE_PORT)
+const port = Number(process.env.SIGNALFOUNDRY_STANDALONE_SMOKE_PORT)
   || 39_000 + (process.pid % 1_000);
 const baseUrl = `http://127.0.0.1:${port}`;
 
@@ -27,7 +27,7 @@ function assertArtifact() {
     'server.js',
     '.next/server',
     '.next/static',
-    'public/generated/quantpilot-tailwind.css',
+    'public/generated/signalfoundry-tailwind.css',
     '.pi/skills.registry.json',
     '.pi/skills.lock.json',
     '.pi/skills.changelog.json',
@@ -96,7 +96,7 @@ async function verifySkillPublication(token) {
   async function mutate(body) {
     const response = await fetch(`${baseUrl}/api/skills`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-quantpilot-admin-token': token },
+      headers: { 'Content-Type': 'application/json', 'x-signalfoundry-admin-token': token },
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(120_000),
     });
@@ -122,7 +122,7 @@ async function verifySkillPublication(token) {
 async function main() {
   assertArtifact();
   const output = [];
-  const isolated = fs.mkdtempSync(path.join(os.tmpdir(), 'quantpilot-standalone-smoke-'));
+  const isolated = fs.mkdtempSync(path.join(os.tmpdir(), 'signalfoundry-standalone-smoke-'));
   const runtimeArtifact = path.join(isolated, 'application');
   try {
     // Running inside the checkout could silently borrow missing dependencies
@@ -141,13 +141,13 @@ async function main() {
       NODE_PATH: '',
       HOSTNAME: '127.0.0.1',
       PORT: String(port),
-      QUANTPILOT_AUTH_MODE: 'disabled',
-      QUANTPILOT_AUTH_SECRET: randomUUID() + randomUUID(),
-      QUANTPILOT_ADMIN_TOKEN: adminToken,
-      QUANTPILOT_DEGRADATION_MODE: 'offline',
-      QUANTPILOT_DATABASE_ENABLED: '0',
-      QUANTPILOT_KNOWLEDGE_ENABLED: '0',
-      QUANTPILOT_SKILLS_STATE_DIR: path.join(isolated, 'skill-catalog'),
+      SIGNALFOUNDRY_AUTH_MODE: 'disabled',
+      SIGNALFOUNDRY_AUTH_SECRET: randomUUID() + randomUUID(),
+      SIGNALFOUNDRY_ADMIN_TOKEN: adminToken,
+      SIGNALFOUNDRY_DEGRADATION_MODE: 'offline',
+      SIGNALFOUNDRY_DATABASE_ENABLED: '0',
+      SIGNALFOUNDRY_KNOWLEDGE_ENABLED: '0',
+      SIGNALFOUNDRY_SKILLS_STATE_DIR: path.join(isolated, 'skill-catalog'),
       PROJECTS_DIR: path.join(isolated, 'projects'),
     },
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -162,7 +162,7 @@ async function main() {
   try {
     const health = await waitForHealth(child, output);
     const payload = await health.json();
-    if (payload?.ok !== true || payload?.service !== 'quantpilot-web') {
+    if (payload?.ok !== true || payload?.service !== 'signalfoundry-web') {
       throw new Error('standalone liveness response has an invalid contract');
     }
     for (const header of [
@@ -173,7 +173,7 @@ async function main() {
     ]) {
       if (!health.headers.get(header)) throw new Error(`security header missing: ${header}`);
     }
-    const css = await fetch(`${baseUrl}/generated/quantpilot-tailwind.css`, { signal: AbortSignal.timeout(5_000) });
+    const css = await fetch(`${baseUrl}/generated/signalfoundry-tailwind.css`, { signal: AbortSignal.timeout(5_000) });
     const cssBytes = (await css.arrayBuffer()).byteLength;
     if (!css.ok || cssBytes === 0) {
       throw new Error(`standalone stable CSS request failed with HTTP ${css.status}`);

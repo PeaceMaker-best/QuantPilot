@@ -39,7 +39,7 @@ function failedReport(failedCheckIds: string[]): QuantValidationReport {
 }
 
 async function createGeneratedProject() {
-  const projectPath = await fs.mkdtemp(path.join(os.tmpdir(), 'quantpilot-dashboard-restore-'));
+  const projectPath = await fs.mkdtemp(path.join(os.tmpdir(), 'signalfoundry-dashboard-restore-'));
   temporaryProjects.push(projectPath);
 
   const protectedContents = {

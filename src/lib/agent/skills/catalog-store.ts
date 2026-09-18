@@ -121,8 +121,8 @@ export const skillsStateDirectory = (root: string) =>
   path.resolve(
     root,
     path.resolve(root) === path.resolve(process.cwd()) &&
-      process.env.QUANTPILOT_SKILLS_STATE_DIR?.trim()
-      ? process.env.QUANTPILOT_SKILLS_STATE_DIR.trim()
+      process.env.SIGNALFOUNDRY_SKILLS_STATE_DIR?.trim()
+      ? process.env.SIGNALFOUNDRY_SKILLS_STATE_DIR.trim()
       : "data/skill-catalog",
   );
 export const deploymentKey = (workspace: string, target: SkillAgentTarget) =>

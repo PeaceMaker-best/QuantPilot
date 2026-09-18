@@ -204,7 +204,7 @@ const temporaryProjects: string[] = [];
 
 async function createProject() {
   const projectPath = await fs.mkdtemp(
-    path.join(os.tmpdir(), "quantpilot-generation-queue-"),
+    path.join(os.tmpdir(), "signalfoundry-generation-queue-"),
   );
   temporaryProjects.push(projectPath);
   return projectPath;

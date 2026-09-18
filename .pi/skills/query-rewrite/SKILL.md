@@ -38,7 +38,7 @@ Consume `.data-agent/finance-query-rewrite.json` as the only semantic bridge bet
 
 - Audit executor/model identity in `.data-agent/workspace.json.runtime` and the secret-free provider profile in `.data-agent/finance-run-plan.json.llm`.
 - `provider`, `model`, `baseUrl`, `credentialEnv`, `agent`, and `queryRewrite` must be present. Only the credential environment-variable name may be persisted.
-- The default profile is local Qwen through ModelPort. ModelPort-hosted DeepSeek, optional direct DeepSeek, and other registered OpenAI-compatible models use the same Query Rewrite contract.
+- The default profile is local Qwen through AetherGateway. AetherGateway-hosted DeepSeek, optional direct DeepSeek, and other registered OpenAI-compatible models use the same Query Rewrite contract.
 - If Query Rewrite is disabled or its credential is unavailable, the request fails closed; it does not become a model-free rewrite.
 
 ## Validation

@@ -263,13 +263,13 @@ export default function HomePage() {
   useEffect(() => {
     const currentHour = new Date().getHours();
     setGreeting(currentHour < 11 ? "早上好" : currentHour < 14 ? "中午好" : currentHour < 18 ? "下午好" : "晚上好");
-    const storedMode = window.localStorage.getItem("quantpilot-question-mode");
+    const storedMode = window.localStorage.getItem("signalfoundry-question-mode");
     if (storedMode === "act" || storedMode === "chat") setOutputMode(storedMode);
   }, []);
 
   const handleOutputModeChange = useCallback((mode: QuestionMode) => {
     setOutputMode(mode);
-    window.localStorage.setItem("quantpilot-question-mode", mode);
+    window.localStorage.setItem("signalfoundry-question-mode", mode);
   }, []);
 
   useEffect(() => {
@@ -688,7 +688,7 @@ export default function HomePage() {
       <header className="platform-header sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between px-3 md:px-6">
         <div className="flex min-w-0 items-center gap-2.5">
           <Image
-            src="/quantpilot-mark.svg"
+            src="/signalfoundry-mark.svg"
             alt=""
             width={40}
             height={40}

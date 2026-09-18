@@ -11,12 +11,12 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#de5d48',
     icons: [
       {
-        src: '/icons/quantpilot-192.png',
+        src: '/icons/signalfoundry-192.png',
         sizes: '192x192',
         type: 'image/png',
       },
       {
-        src: '/icons/quantpilot-512.png',
+        src: '/icons/signalfoundry-512.png',
         sizes: '512x512',
         type: 'image/png',
       },

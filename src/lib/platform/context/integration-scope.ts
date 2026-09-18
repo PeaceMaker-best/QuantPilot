@@ -18,7 +18,7 @@ export interface ProjectIntegrationScope {
   schemaVersion: typeof SCHEMA_VERSION;
   consumerId: string;
   projectId: string;
-  modelPort: {
+  aetherGateway: {
     organizationId: string;
     projectId: string;
     environmentId: string;
@@ -26,7 +26,7 @@ export interface ProjectIntegrationScope {
   memory: {
     tenantId: string;
     context: {
-      product: 'quantpilot';
+      product: 'signalfoundry';
       project_id: string;
     };
   };
@@ -84,11 +84,11 @@ export function createProjectIntegrationScope(input: {
   const environment = input.environment ?? process.env;
   const trustedProjectId = projectId(input.projectId);
   const consumerId = scopeId(
-    environment.QUANTPILOT_INTEGRATION_CONSUMER_ID,
-    'quantpilot',
-    'QUANTPILOT_INTEGRATION_CONSUMER_ID',
+    environment.SIGNALFOUNDRY_INTEGRATION_CONSUMER_ID,
+    'signalfoundry',
+    'SIGNALFOUNDRY_INTEGRATION_CONSUMER_ID',
   );
-  const tenantId = scopeId(input.memory.tenantId, 'quantpilot-local', 'Memory tenant ID');
+  const tenantId = scopeId(input.memory.tenantId, 'signalfoundry-local', 'Memory tenant ID');
   const projectKnowledgeSpace = input.knowledge.projectSpacesEnabled
     ? projectSpaceId(input.knowledge.projectSpaceBaseUrl, trustedProjectId)
     : null;
@@ -101,39 +101,39 @@ export function createProjectIntegrationScope(input: {
     schemaVersion: SCHEMA_VERSION,
     consumerId,
     projectId: trustedProjectId,
-    modelPort: {
+    aetherGateway: {
       organizationId: scopeId(
-        environment.QUANTPILOT_MODELPORT_ORGANIZATION_ID,
+        environment.SIGNALFOUNDRY_AETHERGATEWAY_ORGANIZATION_ID,
         'org_local',
-        'QUANTPILOT_MODELPORT_ORGANIZATION_ID',
+        'SIGNALFOUNDRY_AETHERGATEWAY_ORGANIZATION_ID',
       ),
       projectId: scopeId(
-        environment.QUANTPILOT_MODELPORT_PROJECT_ID,
-        'prj_quantpilot',
-        'QUANTPILOT_MODELPORT_PROJECT_ID',
+        environment.SIGNALFOUNDRY_AETHERGATEWAY_PROJECT_ID,
+        'prj_signalfoundry',
+        'SIGNALFOUNDRY_AETHERGATEWAY_PROJECT_ID',
       ),
       environmentId: scopeId(
-        environment.QUANTPILOT_MODELPORT_ENVIRONMENT_ID,
+        environment.SIGNALFOUNDRY_AETHERGATEWAY_ENVIRONMENT_ID,
         environment.NODE_ENV === 'production' ? 'env_production' : 'env_development',
-        'QUANTPILOT_MODELPORT_ENVIRONMENT_ID',
+        'SIGNALFOUNDRY_AETHERGATEWAY_ENVIRONMENT_ID',
       ),
     },
     memory: {
       tenantId,
-      context: { product: 'quantpilot' as const, project_id: trustedProjectId },
+      context: { product: 'signalfoundry' as const, project_id: trustedProjectId },
     },
     knowledge: { sharedSpaceIds, projectSpaceId: projectKnowledgeSpace, requestedSpaceIds },
   };
   return { ...unsigned, scopeSha256: digest(unsigned) };
 }
 
-export function modelPortScopeHeaders(
-  scope: Pick<ProjectIntegrationScope, 'modelPort'>,
+export function aetherGatewayScopeHeaders(
+  scope: Pick<ProjectIntegrationScope, 'aetherGateway'>,
 ): Readonly<Record<string, string>> {
   return {
-    'X-ModelPort-Organization-Id': scope.modelPort.organizationId,
-    'X-ModelPort-Project-Id': scope.modelPort.projectId,
-    'X-ModelPort-Environment-Id': scope.modelPort.environmentId,
+    'X-AetherGateway-Organization-Id': scope.aetherGateway.organizationId,
+    'X-AetherGateway-Project-Id': scope.aetherGateway.projectId,
+    'X-AetherGateway-Environment-Id': scope.aetherGateway.environmentId,
   };
 }
 
