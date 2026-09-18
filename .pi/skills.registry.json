@@ -4,7 +4,7 @@
     "targetCoreSkillCount": 12,
     "packageFormat": "tgz",
     "packageDir": ".pi/skill-packages",
-    "description": "QuantPilot Skills 仅使用已登记的规范 ID 和当前版本合同；非量化强相关能力不使用 quant 前缀，新增能力优先并入核心 Skill。"
+    "description": "QuantScope Skills 仅使用已登记的规范 ID 和当前版本合同；非量化强相关能力不使用 quant 前缀，新增能力优先并入核心 Skill。"
   },
   "coreSkills": [
     {
@@ -372,7 +372,7 @@
       "version": "0.4.0",
       "status": "stable",
       "scope": "platform",
-      "boundary": "QuantPilot 主平台页面、组件、控制台、设置、列表、导航、状态和响应式体验设计，不负责生成工作空间金融看板。",
+      "boundary": "QuantScope 主平台页面、组件、控制台、设置、列表、导航、状态和响应式体验设计，不负责生成工作空间金融看板。",
       "inputs": [
         "src/app 页面",
         "src/components 组件",

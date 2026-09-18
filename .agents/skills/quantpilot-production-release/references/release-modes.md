@@ -1,4 +1,4 @@
-# QuantPilot release modes
+# QuantScope release modes
 
 ## Purpose
 

@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: {
-    default: 'QuantPilot · 量化研究工作台',
+    default: 'QuantScope · 量化研究工作台',
     template: '%s',
   },
   description: '从真实行情与证据出发，生成、评测和治理可验证的量化研究看板。',

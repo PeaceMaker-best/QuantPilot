@@ -11,7 +11,7 @@ const targets = [
   { size: 180, path: 'public/apple-touch-icon.png' },
   { size: 192, path: 'public/icons/quantpilot-192.png' },
   { size: 512, path: 'public/icons/quantpilot-512.png' },
-  { size: 512, path: 'public/QuantPilot_Icon.png' },
+  { size: 512, path: 'public/QuantScope_Icon.png' },
 ];
 
 async function main() {

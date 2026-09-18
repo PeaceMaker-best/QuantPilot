@@ -12,7 +12,7 @@ const adminLogin = process.env.PLATFORM_ADMIN_LOGIN || 'admin';
 const adminPassword = process.env.PLATFORM_ADMIN_PASSWORD || 'admin';
 
 const routes = [
-  { id: 'home', path: '/', expected: 'QuantPilot' },
+  { id: 'home', path: '/', expected: 'QuantScope' },
   { id: 'business', path: '/business-knowledge', expected: '量化业务知识中心' },
   { id: 'strategy', path: '/strategy-platform', expected: '策略平台' },
   { id: 'research', path: '/research-reports', expected: '投研情报中心' },
@@ -82,7 +82,7 @@ async function discoverProjectRoute(request) {
     const payload = await response.json();
     const projects = Array.isArray(payload) ? payload : payload.projects ?? payload.data ?? [];
     const id = projects[0]?.id;
-    return id ? { id: 'chat', path: `/${id}/chat?visualCheck=1`, expected: projects[0]?.name || 'QuantPilot' } : null;
+    return id ? { id: 'chat', path: `/${id}/chat?visualCheck=1`, expected: projects[0]?.name || 'QuantScope' } : null;
   } catch {
     return null;
   }

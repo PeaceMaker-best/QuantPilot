@@ -98,7 +98,7 @@ let upstreamRuntimePromise:
   | undefined;
 
 /**
- * The PI packages are ESM-only. QuantPilot's standalone Worker entry is
+ * The PI packages are ESM-only. QuantScope's standalone Worker entry is
  * intentionally CommonJS-compatible, so runtime values must cross the native
  * dynamic-import boundary instead of being transpiled into `require()`.
  */
@@ -615,8 +615,8 @@ function providerErrorMessage(options: {
 export type { PiAgentRunEngineOptions } from './options';
 
 /**
- * PI owns the complete multi-turn agent loop and calls the real QuantPilot
- * tools. QuantPilot remains the host governance layer for approval, durable
+ * PI owns the complete multi-turn agent loop and calls the real QuantScope
+ * tools. QuantScope remains the host governance layer for approval, durable
  * prepare-before-effect ledgers, fencing, budgets and Mission completion.
  */
 export class PiAgentRunEngine {

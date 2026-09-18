@@ -1,4 +1,4 @@
-# QuantPilot 文档总览
+# QuantScope 文档总览
 
 [根 README](../README.md) 负责项目定位、首次启动和产品入口。本页按任务组织完整文档：需要操作时查指南与手册，需要理解设计时查架构，需要从头学习时走教学路径。
 
@@ -33,7 +33,7 @@
 | --- | --- |
 | [架构总览](architecture.md) | Web、Agent、市场数据、存储与验证如何协作 |
 | [Data Agent 与 Domain Pack](data-agent-architecture.md) | 通用合同、Agent Profile、业务域和交付能力如何组合 |
-| [PI Agent 采用与治理边界](pi-agent-migration.md) | 执行内核与 QuantPilot 治理层分别承担什么 |
+| [PI Agent 采用与治理边界](pi-agent-migration.md) | 执行内核与 QuantScope 治理层分别承担什么 |
 | [PI Agent 架构](pi-agent.md) | 运行状态、上下文、工具、审批、用量与恢复机制 |
 | [项目结构](project-structure.md) | 页面、服务、领域逻辑和生成工作空间分别放在哪里 |
 | [模块边界](module-boundaries.md) | 允许的依赖、文件规模预算与模块检查 |

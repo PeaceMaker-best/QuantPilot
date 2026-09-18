@@ -70,9 +70,9 @@ vi.mock('@/lib/domains/finance', () => ({
 }));
 
 vi.mock('@/lib/services/pi-agent-prompts', () => ({
-  buildQuantPilotSystemPrompt: vi.fn(() => 'system prompt'),
-  buildQuantPilotTaskPrompt: vi.fn(async (instruction: string) => instruction),
-  buildQuantPilotUserPrompt: mocks.buildUserPrompt,
+  buildQuantScopeSystemPrompt: vi.fn(() => 'system prompt'),
+  buildQuantScopeTaskPrompt: vi.fn(async (instruction: string) => instruction),
+  buildQuantScopeUserPrompt: mocks.buildUserPrompt,
   assessPlatformPreparedQuantArtifacts: mocks.assessPreparedArtifacts,
 }));
 
@@ -551,7 +551,7 @@ describe('PI Agent terminal ownership', () => {
         requestId: 'request-old',
         cliSource: 'pi',
         metadataJson: JSON.stringify({
-          toolName: 'QuantPilot 自动验证',
+          toolName: 'QuantScope 自动验证',
           validationStatus: 'failed',
           reportPath: '.data-agent/validation.json',
         }),
@@ -575,7 +575,7 @@ describe('PI Agent terminal ownership', () => {
         content: '平台流水线状态',
         requestId: 'request-old',
         cliSource: 'pi',
-        metadataJson: JSON.stringify({ isQuantPilotPipelineStep: true }),
+        metadataJson: JSON.stringify({ isQuantScopePipelineStep: true }),
       },
       {
         role: 'user',

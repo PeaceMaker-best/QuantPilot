@@ -695,7 +695,7 @@ export default function HomePage() {
             priority
             className="h-10 w-10 shrink-0 rounded-xl shadow-[0_10px_22px_-12px_rgba(201,67,49,0.82)]"
           />
-          <span className="text-base font-bold tracking-tight sm:text-lg">QuantPilot</span>
+          <span className="text-base font-bold tracking-tight sm:text-lg">QuantScope</span>
 
           <nav className="ml-4 hidden items-center gap-1 lg:flex" aria-label="首页导航">
             <Button type="button" variant="ghost" size="sm" className="h-11 gap-2 rounded-none border-b-2 border-primary px-3 text-xs font-semibold text-foreground">

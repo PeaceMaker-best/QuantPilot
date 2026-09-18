@@ -1,8 +1,8 @@
 # API 总览
 
-这份文档记录 QuantPilot 当前对外和内部页面使用的主要 API。它不是替代源码的逐行说明，而是帮助维护者快速判断“这个页面读的是哪个入口、后端职责在哪里、出问题先看哪一层”。
+这份文档记录 QuantScope 当前对外和内部页面使用的主要 API。它不是替代源码的逐行说明，而是帮助维护者快速判断“这个页面读的是哪个入口、后端职责在哪里、出问题先看哪一层”。
 
-生成类 API 由 PI Agent `0.82.1` 执行完整多轮工具循环，权限、审批、durable run、Mission 和交付验证由 QuantPilot 承担。所有 Agent API、设置和任务信封只接受规范 CLI 值 `pi`。详见 [PI Agent 采用与治理边界](pi-agent-migration.md)。
+生成类 API 由 PI Agent `0.82.1` 执行完整多轮工具循环，权限、审批、durable run、Mission 和交付验证由 QuantScope 承担。所有 Agent API、设置和任务信封只接受规范 CLI 值 `pi`。详见 [PI Agent 采用与治理边界](pi-agent-migration.md)。
 
 ## 服务边界
 
@@ -128,13 +128,13 @@ LLM 通过 Tool Schema 解析标的原文、时间范围、分析重点和输出
 
 | 路由 | 方法 | 调用方 | 责任 |
 | --- | --- | --- | --- |
-| `/api/projects/[project_id]/memory/preferences` | `GET/POST` | 偏好管理客户端 | 列出或显式新增当前用户的 QuantPilot 偏好 |
+| `/api/projects/[project_id]/memory/preferences` | `GET/POST` | 偏好管理客户端 | 列出或显式新增当前用户的 QuantScope 偏好 |
 | `/api/projects/[project_id]/memory/preferences/[record_id]/corrections` | `POST` | 偏好管理客户端 | 追加不可变纠正 revision |
 | `/api/projects/[project_id]/memory/preferences/[record_id]/revisions` | `GET` | 偏好管理客户端 | 查看 revision 历史 |
 | `/api/projects/[project_id]/memory/uses/[request_id]` | `GET` | 审计/反馈入口 | 查询本轮实际暴露的 revision 与内容哈希 |
 | `/api/projects/[project_id]/memory/outcomes` | `POST` | 显式用户反馈 | 对本轮真实使用过的 revision 记录可归因结果 |
 
-聊天 `/api/chat/[project_id]/act` 会在 Agent 执行前自动调用 Memory 的 `/v1/recall` 和 `/v1/recall-contexts`。浏览器不直接提交 tenant/subject；QuantPilot 在项目授权后使用可信 `actorUserId` 构造 Scope，并再次执行产品、项目、键和长度过滤。完整配置、请求示例、效果状态与安全边界见[用户记忆服务接入、使用与效果验证](user-memory-integration.md)。
+聊天 `/api/chat/[project_id]/act` 会在 Agent 执行前自动调用 Memory 的 `/v1/recall` 和 `/v1/recall-contexts`。浏览器不直接提交 tenant/subject；QuantScope 在项目授权后使用可信 `actorUserId` 构造 Scope，并再次执行产品、项目、键和长度过滤。完整配置、请求示例、效果状态与安全边界见[用户记忆服务接入、使用与效果验证](user-memory-integration.md)。
 
 ### 认证、权限、配额与用户治理
 
@@ -248,7 +248,7 @@ fundamental 复用 financials；单个上游故障不会丢弃其他成功区块
 | `/api/v1/events/announcements/{symbol}` | `GET` | 公告事件 |
 | `/api/v1/events/dividends/{symbol}` | `GET` | 分红除权事件 |
 
-财报和基本面指标 GET 均支持带时区的 `as_of`，例如 `2026-09-06T00:00:00Z`。参数省略时仍查询最新数据，并明确返回 `knowledge.point_in_time=false`；传入后只读不可变版本表，返回 `knowledge.cutoff`、`data_version` 与逐条 `vintages`。无时区或未来时点返回 400，数据库不可用或内容校验失败返回 503，无历史样本返回空结果与质量提示。采集接口使用现有 `X-QuantPilot-Admin-Token` 鉴权，返回插入、重复、缺报告期和缺公告时间的计数。
+财报和基本面指标 GET 均支持带时区的 `as_of`，例如 `2026-09-06T00:00:00Z`。参数省略时仍查询最新数据，并明确返回 `knowledge.point_in_time=false`；传入后只读不可变版本表，返回 `knowledge.cutoff`、`data_version` 与逐条 `vintages`。无时区或未来时点返回 400，数据库不可用或内容校验失败返回 503，无历史样本返回空结果与质量提示。采集接口使用现有 `X-QuantScope-Admin-Token` 鉴权，返回插入、重复、缺报告期和缺公告时间的计数。
 
 历史能力仅从首次观测开始，不推测首次采集之前的数据版本。时间与存储字段详见 [财报点时版本](data-dictionary.md#财报点时版本)。
 

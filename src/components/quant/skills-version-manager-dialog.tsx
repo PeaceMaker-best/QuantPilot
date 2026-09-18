@@ -84,7 +84,7 @@ export function SkillsVersionManagerDialog({
             <div className="min-w-0">
               <h2 className="text-xl font-bold tracking-normal text-slate-950 sm:text-2xl">版本管理</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                QuantPilot Skills 管理 · Skill: {selectedSkill.id}
+                QuantScope Skills 管理 · Skill: {selectedSkill.id}
               </p>
             </div>
           </div>

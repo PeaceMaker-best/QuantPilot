@@ -48,7 +48,7 @@ const connectorOperations = Array.from(new Set(
 )).map((endpoint) => ({
   id: operationId(endpoint),
   title: endpoint,
-  description: `QuantPilot market-data operation ${endpoint}`,
+  description: `QuantScope market-data operation ${endpoint}`,
   effect: 'read' as const,
   inputSchema: { type: 'object', additionalProperties: false },
 }));
@@ -96,7 +96,7 @@ export const FINANCE_DOMAIN_PACK: DataAgentDomainPack = {
 export const QUANTPILOT_AGENT_PROFILE: DataAgentProfile = {
   id: QUANTPILOT_AGENT_PROFILE_ID,
   version: '1.0.0',
-  name: 'QuantPilot Finance Research',
+  name: 'QuantScope Finance Research',
   domainPackIds: [FINANCE_DOMAIN_PACK_ID],
   defaultCapabilityId: DEFAULT_QUANT_CAPABILITY_ID,
   deliveryPackId: 'workspace.next-dashboard',
@@ -104,17 +104,17 @@ export const QUANTPILOT_AGENT_PROFILE: DataAgentProfile = {
   knowledgePolicyId: 'quantpilot.governed-knowledge',
 };
 
-export function createQuantPilotDataAgentRegistry(): DataAgentRegistry {
+export function createQuantScopeDataAgentRegistry(): DataAgentRegistry {
   return new DataAgentRegistry()
     .registerDeliveryPack(NEXT_DASHBOARD_DELIVERY_PACK)
     .registerDomainPack(FINANCE_DOMAIN_PACK)
     .registerProfile(QUANTPILOT_AGENT_PROFILE);
 }
 
-export function resolveQuantPilotDataAgentProfile(
+export function resolveQuantScopeDataAgentProfile(
   profileId = QUANTPILOT_AGENT_PROFILE_ID,
 ) {
-  return createQuantPilotDataAgentRegistry().resolveProfile(profileId);
+  return createQuantScopeDataAgentRegistry().resolveProfile(profileId);
 }
 
 export function getFinanceSkillCapabilityDescriptor(

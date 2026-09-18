@@ -187,10 +187,10 @@
     "no-code",
     "low-code"
   ],
-  "author": "tiammomo",
+  "author": "PeaceMaker-best",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/tiammomo/QuantPilot.git"
+    "url": "git+ssh://git@github.com/PeaceMaker-best/QuantScope.git"
   }
 }

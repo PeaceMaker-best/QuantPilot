@@ -1,4 +1,4 @@
-# QuantPilot 市场数据服务
+# QuantScope 市场数据服务
 
 这个子模块用于给量化分析 Agent 和策略平台提供行情、财务、事件、补数、基础组件和回测数据能力。当前以东方财富为实时行情和事件主源，历史 K 线优先走东方财富，失败时使用 Baostock 补 A 股日线增强字段，AKShare 作为补充聚合层，Yahoo Finance 仅用于海外市场方向。
 
@@ -172,7 +172,7 @@ curl 'http://127.0.0.1:8000/api/v1/quotes/history/600519?period=daily&adjustment
 
 说明：日/周/月 K 线、技术指标和回测统一先读 `quant.stock_bars`；只有覆盖不足或显式 `refresh=true` 才访问外部历史源。响应的 `metadata.data_basis`、`coverage` 和 `freshness` 会说明实际口径。实时快照隔离写入 `quant.realtime_quote_snapshots`，不会覆盖正式复权日线。
 
-所有补数、同步、质量扫描等写接口接受 `Authorization: Bearer ...` 或 `X-QuantPilot-Admin-Token`。本机非 strict 且未配置令牌时保持开发兼容；strict 或非 loopback 监听未配置令牌时写接口关闭。
+所有补数、同步、质量扫描等写接口接受 `Authorization: Bearer ...` 或 `X-QuantScope-Admin-Token`。本机非 strict 且未配置令牌时保持开发兼容；strict 或非 loopback 监听未配置令牌时写接口关闭。
 
 ### 历史 K 线字段补数
 
@@ -240,7 +240,7 @@ curl --get 'http://127.0.0.1:8000/api/v1/fundamentals/financials/600519' \
   --data-urlencode 'as_of=2026-09-06T00:00:00+08:00' --data-urlencode 'limit=8'
 ```
 
-先执行新增的 `sqls/010-financial-report-versions.sql`，再由管理员调用 `POST /api/v1/fundamentals/financials/{symbol}/capture?limit=40` 采集最新源数据（使用现有 `X-QuantPilot-Admin-Token`，不在命令历史中写入明文凭据）。重复内容复用版本，修订只追加。历史查询只返回截止时点前已经观测且已经公告的版本，并校验 `knowledge.data_version` 对应的内容。未积累的历史返回空样本，数据库故障返回 503，不会调用最新源或缓存补齐。未传 `as_of` 时仍返回最新数据，并标记 `knowledge.point_in_time=false`。
+先执行新增的 `sqls/010-financial-report-versions.sql`，再由管理员调用 `POST /api/v1/fundamentals/financials/{symbol}/capture?limit=40` 采集最新源数据（使用现有 `X-QuantScope-Admin-Token`，不在命令历史中写入明文凭据）。重复内容复用版本，修订只追加。历史查询只返回截止时点前已经观测且已经公告的版本，并校验 `knowledge.data_version` 对应的内容。未积累的历史返回空样本，数据库故障返回 503，不会调用最新源或缓存补齐。未传 `as_of` 时仍返回最新数据，并标记 `knowledge.point_in_time=false`。
 
 这不是历史财报回填：首次采集以前的版本尚不可知；自动采集调度、研究计划的点时参数传递，以及复权/行业/退市证券历史仍待接入。字段与时间口径见 [财报点时版本](../../docs/data-dictionary.md#财报点时版本)。
 

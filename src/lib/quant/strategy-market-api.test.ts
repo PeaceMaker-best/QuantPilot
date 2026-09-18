@@ -77,7 +77,7 @@ describe('strategy market transport', () => {
     await controlStrategyIngestionJob({ jobId: 'job/1', action: 'pause', reason: 'review' });
     const [url, init] = fetcher.mock.calls[0];
     expect(String(url)).toContain('/job%2F1/control');
-    expect(init).toMatchObject({ method: 'POST', headers: { 'X-QuantPilot-Admin-Token': 'unit-fixture-admin' } });
+    expect(init).toMatchObject({ method: 'POST', headers: { 'X-QuantScope-Admin-Token': 'unit-fixture-admin' } });
     expect(JSON.parse(String(init?.body))).toEqual({ action: 'pause', reason: 'review' });
   });
 });

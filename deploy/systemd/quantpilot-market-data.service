@@ -1,5 +1,5 @@
 [Unit]
-Description=QuantPilot market data API
+Description=QuantScope market data API
 After=network-online.target
 Wants=network-online.target
 

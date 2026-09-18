@@ -1691,7 +1691,7 @@ const persistProjectPreferences = useCallback(
                   void runAct(message, images, mode);
                 }}
                 disabled={false}
-                placeholder={mode === 'act' ? "向 QuantPilot 描述你的量化需求..." : "和 QuantPilot 讨论项目细节..."}
+                placeholder={mode === 'act' ? "向 QuantScope 描述你的量化需求..." : "和 QuantScope 讨论项目细节..."}
                 mode={mode}
                 onModeChange={setMode}
                 projectId={projectId}
@@ -2049,7 +2049,7 @@ const persistProjectPreferences = useCallback(
                               onClick={!isRunning && !isStartingPreview ? () => start({ requireValidation: true }) : undefined}
                               className={`block w-40 h-40 mx-auto mb-6 relative ${!isRunning && !isStartingPreview ? 'cursor-pointer group' : ''}`}
                             >
-                              {/* QuantPilot 启动动画图标 */}
+                              {/* QuantScope 启动动画图标 */}
                               <MotionDiv
                                 className="w-full h-full"
                                 animate={isStartingPreview ? { rotate: 360 } : {}}

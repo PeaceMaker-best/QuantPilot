@@ -148,7 +148,7 @@ export function SkillsMarket({
         <section className="rounded-2xl border bg-card p-6">
           <p className="flex items-center gap-2 text-sm font-medium text-primary">
             <ShieldCheck className="h-4 w-4" />
-            QuantPilot 内置可信技能
+            QuantScope 内置可信技能
           </p>
           <h1 className="mt-3 text-2xl font-semibold">
             选择研究能力，核验交付版本

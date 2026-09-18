@@ -119,7 +119,7 @@ export async function ensureProjectLlmConfiguration(params: {
     workspaceId: params.projectId,
     projectId: params.projectId,
     projectName: params.projectName,
-    platform: 'QuantPilot',
+    platform: 'QuantScope',
     composition: application.composition,
     runtime: {
       ...existingRuntime,
