@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import type { QuantRunPlan } from '@/lib/domains/finance/workspace';
 import { getProjectLlmConfig } from '@/lib/config/llm';
 import {
-  createQuantScopeDataAgentRegistry,
+  createSignalFoundryDataAgentRegistry,
   QUANTPILOT_AGENT_PROFILE_ID,
 } from '@/lib/domains/finance';
 import {
@@ -18,7 +18,7 @@ function plan(overrides: Partial<QuantRunPlan> = {}): QuantRunPlan {
     runId: 'run-workspace-response',
     status: 'planned',
     capabilityId: 'stock_diagnosis',
-    composition: createQuantScopeDataAgentRegistry().resolveCapability(
+    composition: createSignalFoundryDataAgentRegistry().resolveCapability(
       QUANTPILOT_AGENT_PROFILE_ID,
       'stock_diagnosis',
     ).composition,

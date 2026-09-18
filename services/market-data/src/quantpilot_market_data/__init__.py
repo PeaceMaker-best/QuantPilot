@@ -1,4 +1,4 @@
-"""QuantScope 市场数据后端模块。"""
+"""SignalFoundry 市场数据后端模块。"""
 
 __all__ = ["__version__"]
 

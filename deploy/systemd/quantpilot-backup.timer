@@ -1,5 +1,5 @@
 [Unit]
-Description=Create a QuantScope backup every six hours
+Description=Create a SignalFoundry backup every six hours
 
 [Timer]
 OnCalendar=*-*-* 00/6:10:00 Asia/Shanghai

@@ -1,4 +1,4 @@
--- QuantScope Prisma baseline at Git revision c641c00 (before durable MoAgent tables).
+-- SignalFoundry Prisma baseline at Git revision c641c00 (before durable MoAgent tables).
 -- Fresh databases apply this migration normally. An existing database that is
 -- already at this exact application schema must mark this migration as applied;
 -- see ../README.md. Never run this SQL manually against an existing database.

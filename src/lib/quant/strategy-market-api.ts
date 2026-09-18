@@ -67,5 +67,5 @@ export async function fetchMarketApiJson<T>(
 
 export function marketAdminHeaders(): Record<string, string> {
   const token = process.env.QUANTPILOT_MARKET_ADMIN_TOKEN?.trim();
-  return token ? { 'X-QuantScope-Admin-Token': token } : {};
+  return token ? { 'X-SignalFoundry-Admin-Token': token } : {};
 }

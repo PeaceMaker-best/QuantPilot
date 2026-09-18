@@ -1,4 +1,4 @@
--- QuantScope strategy research platform bootstrap SQL.
+-- SignalFoundry strategy research platform bootstrap SQL.
 -- This file is intentionally idempotent so first-use setup can run it repeatedly.
 
 CREATE EXTENSION IF NOT EXISTS timescaledb;

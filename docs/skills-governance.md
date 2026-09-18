@@ -1,6 +1,6 @@
 # Skills 治理规范
 
-QuantScope 的 skills 采用“少量规范 Skill ID + tgz 包发布 + PI Agent runtime capsule”的方式管理。目标是让每个 Skill 的能力边界、版本、变更、打包产物、运行时投影和安装结果都可追溯。
+SignalFoundry 的 skills 采用“少量规范 Skill ID + tgz 包发布 + PI Agent runtime capsule”的方式管理。目标是让每个 Skill 的能力边界、版本、变更、打包产物、运行时投影和安装结果都可追溯。
 
 仓库根目录 `.pi/**` 和 `config/pi-agent-skill-capsules.json` 提供内置发布基线。在线维护使用平台独立持久化目录中的草稿、不可变完整快照和原子生效指针；PI Agent 按平台保存的项目版本记录编译，未固定的旧项目使用平台当前发布版。完整性由版本、registry/lock、快照 manifest 与 SHA-256 校验提供，目前没有密码学签名。工作空间 `.pi/skills/` 是参考镜像，不能通过修改镜像或安装收据选择可执行内容。
 
@@ -14,7 +14,7 @@ QuantScope 的 skills 采用“少量规范 Skill ID + tgz 包发布 + PI Agent 
 4. 修改 skill 必须同步更新版本、changelog、打包产物和 lock。
 5. 能用 Python 脚本稳定计算的内容，不要只写成提示词规则。
 6. `SKILL.md` 保持短而硬，复杂模板、字段说明和场景矩阵放到 `references/`。
-7. Skill ID 按能力 scope 命名：只有量化域能力使用 `quant-`，平台 UI 使用 `platform-`，通用工作流、图片、证据和可视化能力不使用 QuantScope 或 quant 前缀。
+7. Skill ID 按能力 scope 命名：只有量化域能力使用 `quant-`，平台 UI 使用 `platform-`，通用工作流、图片、证据和可视化能力不使用 SignalFoundry 或 quant 前缀。
 8. `SKILL.md` 是完整源材料，不直接进入模型上下文。PI Agent 只加载与当前 phase、信号和 typed tools 兼容的原子 capsule；必需 section 超出预算时失败关闭，不截断工作流。
 9. 每个源码 Skill 都必须是完整技能包：`SKILL.md`、`references/`、`scripts/`、`agents/openai.yaml` 缺一不可；`assets/` 仅在确有输出模板或素材时加入。
 10. 每个 reference 和 script 都必须由 `SKILL.md` 直接导航并说明使用时机；不允许孤儿资源，也不在 Skill 包中放 README、CHANGELOG 或安装指南。
@@ -265,7 +265,7 @@ npm run package:skills -- <skill-id>
 | Claude Code | `.claude/skills` | 标准技能文件安装与哈希核验；外部工具接入、会话重载和真实运行需在该 Agent 中验证 |
 | Codex | `.agents/skills` | 标准技能文件安装与哈希核验；外部工具接入、会话重载和真实运行需在该 Agent 中验证 |
 
-外部 Agent 的目录约定来自 [Claude 官方文档](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) 与 [OpenAI 官方文档](https://developers.openai.com/codex/skills/)。文件安装成功不表示 QuantScope 的 typed tools 自动出现在外部 Agent 中。
+外部 Agent 的目录约定来自 [Claude 官方文档](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) 与 [OpenAI 官方文档](https://developers.openai.com/codex/skills/)。文件安装成功不表示 SignalFoundry 的 typed tools 自动出现在外部 Agent 中。
 
 `GET /api/skills?view=studio` 提供受管理权限保护的草稿和维护记录；`POST /api/skills` 管理草稿、发布与回退；`POST /api/skills/installations` 管理项目安装。旧版永久禁用的“应用”按钮已删除，操作统一收敛到市场。
 

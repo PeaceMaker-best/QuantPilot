@@ -109,7 +109,7 @@ export async function publishValidationSummary(
       cliSource: params.cliSource ?? 'validator',
       requestId: params.requestId ?? undefined,
       metadata: {
-        toolName: 'QuantScope 自动验证',
+        toolName: 'SignalFoundry 自动验证',
         isMissionIntermediate: true,
         validationStatus: report.status,
         reportPath: report.reportPath,

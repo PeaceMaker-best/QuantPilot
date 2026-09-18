@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'QuantScope · 量化研究工作台',
-    short_name: 'QuantScope',
+    name: 'SignalFoundry · 量化研究工作台',
+    short_name: 'SignalFoundry',
     description: '从真实行情与证据出发，生成、评测和治理可验证的量化研究看板。',
     start_url: '/',
     display: 'standalone',

@@ -210,7 +210,7 @@ def write_json(result: JsonRecord, output_path: str | None) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="生成 QuantScope 估值情景摘要。")
+    parser = argparse.ArgumentParser(description="生成 SignalFoundry 估值情景摘要。")
     parser.add_argument(
         "input",
         nargs="?",

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the deterministic delivery matrix for a QuantScope platform page."""
+"""Validate the deterministic delivery matrix for a SignalFoundry platform page."""
 
 from __future__ import annotations
 

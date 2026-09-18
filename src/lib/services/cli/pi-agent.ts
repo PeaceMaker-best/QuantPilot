@@ -1,4 +1,4 @@
-/** QuantScope integration for the upstream PI Agent runtime. */
+/** SignalFoundry integration for the upstream PI Agent runtime. */
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -39,9 +39,9 @@ import {
 import { createRealtimeMessage, serializeMessage } from '@/lib/serializers/chat';
 import {
   assessPlatformPreparedQuantArtifacts,
-  buildQuantScopeSystemPrompt,
-  buildQuantScopeTaskPrompt,
-  buildQuantScopeUserPrompt,
+  buildSignalFoundrySystemPrompt,
+  buildSignalFoundryTaskPrompt,
+  buildSignalFoundryUserPrompt,
 } from '@/lib/services/pi-agent-prompts';
 import {
   completeAgentRun,
@@ -399,8 +399,8 @@ async function buildBoundedHistory(
         message.cliSource === 'pi' &&
         message.requestId &&
         metadata?.isPiAgentFinal !== true) return false;
-      return metadata?.isQuantScopePipelineStep !== true &&
-        metadata?.toolName !== 'QuantScope 自动验证' &&
+      return metadata?.isSignalFoundryPipelineStep !== true &&
+        metadata?.toolName !== 'SignalFoundry 自动验证' &&
         !(typeof metadata?.validationStatus === 'string' &&
           metadata?.reportPath === '.data-agent/validation.json');
     });
@@ -519,7 +519,7 @@ async function persistToolMessage(params: {
 }
 
 /**
- * Execute one upstream PI Agent run. QuantScope owns planning/validation and
+ * Execute one upstream PI Agent run. SignalFoundry owns planning/validation and
  * overall request completion; this function owns only the agent execution stage.
  */
 export async function executePiAgent(
@@ -900,7 +900,7 @@ async function executePiAgentPhase(
           ? positiveIntegerEnv('PI_AGENT_PREFETCHED_SKILL_CONTEXT_CHARS', 4_000)
           : positiveIntegerEnv('PI_AGENT_SKILL_CONTEXT_CHARS', 6_000),
       }),
-      buildQuantScopeTaskPrompt(instruction, workspace, {
+      buildSignalFoundryTaskPrompt(instruction, workspace, {
         runPlan,
         platformPrepared,
         preparedIntent,
@@ -946,12 +946,12 @@ async function executePiAgentPhase(
         }
       }
     }
-    const systemPrompt = buildQuantScopeSystemPrompt({
+    const systemPrompt = buildSignalFoundrySystemPrompt({
       phase: skillPhase,
       preparedIntent,
       skillManifest: skillBundle.systemContext,
     });
-    const userPrompt = buildQuantScopeUserPrompt({
+    const userPrompt = buildSignalFoundryUserPrompt({
       taskPacket: taskPrompt,
       skillContext: skillBundle.taskContext,
       personalizationContext: personalization?.content ?? null,
@@ -988,7 +988,7 @@ async function executePiAgentPhase(
             apiKey: apiKey!,
             baseUrl: llmConfig.baseUrl,
             headers: {
-              'X-Client-App': `QuantScope-PI-Agent/${PI_AGENT_VERSION}`,
+              'X-Client-App': `SignalFoundry-PI-Agent/${PI_AGENT_VERSION}`,
             },
             maxRequestBytes: positiveIntegerEnv('PI_AGENT_MAX_REQUEST_BYTES', 2_000_000),
             maxRetries: nonNegativeIntegerEnv('PI_AGENT_PROVIDER_MAX_RETRIES', 2),
@@ -1000,7 +1000,7 @@ async function executePiAgentPhase(
             apiKey: apiKey!,
             baseUrl: llmConfig.baseUrl,
             headers: {
-              'X-Client-App': `QuantScope-PI-Agent/${PI_AGENT_VERSION}`,
+              'X-Client-App': `SignalFoundry-PI-Agent/${PI_AGENT_VERSION}`,
               ...modelPortScopeHeaders(integrationScope),
             },
             maxRequestBytes: positiveIntegerEnv('PI_AGENT_MAX_REQUEST_BYTES', 2_000_000),
@@ -1556,7 +1556,7 @@ export async function initializeNextJsProject(
   const instruction = `Enhance the existing, platform-scaffolded Next.js 16 application for this requirement:
 ${initialPrompt}
 
-Keep the App Router, TypeScript, package setup, local CSS, market proxy, platform-prefetched run plan, final data, evidence, and dashboard data binding. Do not recreate the project or reset package.json. At 390x844 the first viewport must show the instrument, price, at least two real metrics, and the main visualization body. At 1440x900 keep the primary visualization above the fold. QuantScope will run build, preview, and validation after submit_result.`;
+Keep the App Router, TypeScript, package setup, local CSS, market proxy, platform-prefetched run plan, final data, evidence, and dashboard data binding. Do not recreate the project or reset package.json. At 390x844 the first viewport must show the instrument, price, at least two real metrics, and the main visualization body. At 1440x900 keep the primary visualization above the fold. SignalFoundry will run build, preview, and validation after submit_result.`;
   return executePiAgent(
     projectId,
     projectPath,

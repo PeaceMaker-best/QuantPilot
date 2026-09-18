@@ -1,5 +1,5 @@
 [Unit]
-Description=Create a verified QuantScope release backup
+Description=Create a verified SignalFoundry release backup
 After=network-online.target
 
 [Service]

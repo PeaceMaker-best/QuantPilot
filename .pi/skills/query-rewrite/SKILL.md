@@ -3,9 +3,9 @@ name: query-rewrite
 description: Consume the platform-owned LLM-first quantitative query contract before planning or data retrieval. Use for securities, markets, time ranges, comparisons, fundamentals, technical analysis, events, strategies, backtests, portfolios, or follow-up requests.
 ---
 
-# QuantScope Query Rewrite
+# SignalFoundry Query Rewrite
 
-Consume `.data-agent/finance-query-rewrite.json` as the only semantic bridge between the user's wording, the run plan, and API-based data skills. QuantScope calls the selected LLM once through a strict Tool Schema, checks every semantic evidence span against the original query, and then sends literal target names or codes to the independent symbol Resolver.
+Consume `.data-agent/finance-query-rewrite.json` as the only semantic bridge between the user's wording, the run plan, and API-based data skills. SignalFoundry calls the selected LLM once through a strict Tool Schema, checks every semantic evidence span against the original query, and then sends literal target names or codes to the independent symbol Resolver.
 
 > `.data-agent/**` is platform-owned and read-only. Never create, edit, delete, or repair the rewrite artifact from the Agent runtime.
 

@@ -1,4 +1,4 @@
--- QuantScope foundation components.
+-- SignalFoundry foundation components.
 -- Adds shared tables for trading calendars, factor definitions, data quality scans
 -- and generic platform jobs. Safe to run repeatedly.
 

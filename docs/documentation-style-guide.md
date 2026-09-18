@@ -1,6 +1,6 @@
 # 文档写作风格指南
 
-QuantScope 的文档不是给机器看的配置清单，而是给后来的人看的路标。代码会变，人的记忆也会掉线；一份好文档应该能让读者在半夜排障、第一次接手模块、或者隔几周回来继续开发时，都能快速找回上下文。
+SignalFoundry 的文档不是给机器看的配置清单，而是给后来的人看的路标。代码会变，人的记忆也会掉线；一份好文档应该能让读者在半夜排障、第一次接手模块、或者隔几周回来继续开发时，都能快速找回上下文。
 
 ## 我们希望文档像什么
 
@@ -80,7 +80,7 @@ gpt-image2 适合生成概念图、流程图和学习地图，让读者先看见
 可复用提示词骨架：
 
 ```text
-Create a clean 16:9 educational illustration for QuantScope documentation.
+Create a clean 16:9 educational illustration for SignalFoundry documentation.
 Show <流程或概念> using abstract UI cards, database, workflow arrows, validation icons, and light fintech engineering style.
 Use a white or very light background, blue/teal accents, generous whitespace, and crisp edges.
 Avoid tiny readable text, brand logos, watermarks, dark background, and clutter.

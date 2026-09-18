@@ -1,9 +1,9 @@
 ---
 name: run-planner
-description: Interpret the platform-created QuantScope run plan, validate intent completeness, and guide the next quantitative research step without modifying platform-owned .data-agent artifacts.
+description: Interpret the platform-created SignalFoundry run plan, validate intent completeness, and guide the next quantitative research step without modifying platform-owned .data-agent artifacts.
 ---
 
-# QuantScope 运行规划能力
+# SignalFoundry 运行规划能力
 
 消费平台生成的任务与金融计划，检查它们是否一致。不重新解析用户关键词，不创建第二套标的或能力选择规则。
 

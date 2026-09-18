@@ -3,7 +3,7 @@ name: dashboard-visualization
 description: Generate, repair, or enhance real-data Next.js/HTML quantitative dashboards with financial charts, matrices, responsive layouts, and evidence-backed states. Use after data preparation or whenever the user asks for a visualization page, market dashboard, research workbench, or validation repair.
 ---
 
-# QuantScope 金融可视化看板能力
+# SignalFoundry 金融可视化看板能力
 
 把平台准备好的真实数据绑定到可运行、可交互的页面。完成交付必须修改页面文件，并由平台验证数据、build、预览和证据。
 

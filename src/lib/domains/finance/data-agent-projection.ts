@@ -5,7 +5,7 @@ import type {
 } from '@/lib/data-agent';
 import { DATA_AGENT_TASK_RELATIVE_PATH } from '@/lib/data-agent';
 import {
-  createQuantScopeDataAgentRegistry,
+  createSignalFoundryDataAgentRegistry,
   QUANTPILOT_AGENT_PROFILE,
 } from './agent-profile';
 import { FINANCE_RUN_PLAN_RELATIVE_PATH } from './workspace-artifacts';
@@ -59,7 +59,7 @@ export function projectFinanceRewriteToDataAgentTask(
 }
 
 export function projectFinancePlanToDataAgentPlan(plan: QuantRunPlan): DataAgentExecutionPlan {
-  const composition = createQuantScopeDataAgentRegistry().resolveCapability(
+  const composition = createSignalFoundryDataAgentRegistry().resolveCapability(
     QUANTPILOT_AGENT_PROFILE.id,
     plan.requestedCapabilityId ?? plan.capabilityId,
   ).composition;
@@ -94,7 +94,7 @@ export function projectFinanceProfileSelection(
   updatedAt: string,
   selectionSource: DataAgentProfileSelection['selectionSource'] = 'inferred',
 ): DataAgentProfileSelection {
-  const composition = createQuantScopeDataAgentRegistry().resolveCapability(
+  const composition = createSignalFoundryDataAgentRegistry().resolveCapability(
     QUANTPILOT_AGENT_PROFILE.id,
     capabilityId,
   ).composition;

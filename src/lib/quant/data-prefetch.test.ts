@@ -4,7 +4,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { QuantRunPlan } from '@/lib/domains/finance/workspace';
 import {
-  createQuantScopeDataAgentRegistry,
+  createSignalFoundryDataAgentRegistry,
   QUANTPILOT_AGENT_PROFILE_ID,
 } from '@/lib/domains/finance';
 import { getProjectLlmConfig } from '@/lib/config/llm';
@@ -83,7 +83,7 @@ describe('quant data-prefetch symbol candidates', () => {
       runId: 'conversational-symbol-prefetch',
       status: 'planned',
       capabilityId: 'stock_diagnosis',
-      composition: createQuantScopeDataAgentRegistry().resolveCapability(
+      composition: createSignalFoundryDataAgentRegistry().resolveCapability(
         QUANTPILOT_AGENT_PROFILE_ID,
         'stock_diagnosis',
       ).composition,

@@ -1,4 +1,4 @@
-# QuantScope release modes
+# SignalFoundry release modes
 
 ## Purpose
 

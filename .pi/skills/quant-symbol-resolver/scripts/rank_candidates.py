@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rank QuantScope symbol-resolution candidates without guessing through ambiguity."""
+"""Rank SignalFoundry symbol-resolution candidates without guessing through ambiguity."""
 
 from __future__ import annotations
 

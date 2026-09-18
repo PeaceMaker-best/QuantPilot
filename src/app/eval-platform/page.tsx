@@ -3,7 +3,7 @@ import EvalsDashboardClient from './EvalsDashboardClient';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '评测平台 · QuantScope',
+  title: '评测平台 · SignalFoundry',
 };
 
 export default async function EvalPlatformPage() {

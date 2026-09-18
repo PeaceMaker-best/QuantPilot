@@ -1,7 +1,7 @@
 apiVersion: 1
 
 datasources:
-  - name: QuantScope Loki
+  - name: SignalFoundry Loki
     uid: quantpilot-loki
     type: loki
     access: proxy

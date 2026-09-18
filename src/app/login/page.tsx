@@ -5,7 +5,7 @@ import LoginClient from './LoginClient';
 import { getDevelopmentAdminDefaults, getProjectAuthConfig } from '@/lib/config/auth';
 
 export const metadata: Metadata = {
-  title: '登录 · QuantScope',
+  title: '登录 · SignalFoundry',
 };
 
 export default async function LoginPage({

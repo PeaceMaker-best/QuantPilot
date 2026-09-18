@@ -1,5 +1,5 @@
 [Unit]
-Description=QuantScope expired auth data and audit retention cleanup
+Description=SignalFoundry expired auth data and audit retention cleanup
 After=network-online.target
 
 [Service]

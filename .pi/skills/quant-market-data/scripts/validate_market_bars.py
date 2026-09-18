@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate QuantScope's normalized market-bars contract."""
+"""Validate SignalFoundry's normalized market-bars contract."""
 
 from __future__ import annotations
 
@@ -162,7 +162,7 @@ def validate(payload: Any) -> tuple[list[str], list[str], dict[str, Any]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Validate normalized QuantScope market bars and emit JSON.")
+    parser = argparse.ArgumentParser(description="Validate normalized SignalFoundry market bars and emit JSON.")
     parser.add_argument("--input", default="-", help="JSON file path, or '-' for stdin (default).")
     args = parser.parse_args()
     try:

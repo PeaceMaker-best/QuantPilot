@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build deterministic QuantScope source and data-quality evidence from dataset facts."""
+"""Build deterministic SignalFoundry source and data-quality evidence from dataset facts."""
 
 from __future__ import annotations
 

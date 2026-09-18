@@ -5,8 +5,8 @@ import OpsPlatformClient, { type OpsView } from './OpsPlatformClient';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '运行治理中心 · QuantScope',
-  description: '统一治理 QuantScope 服务运行、工作空间交付、生成链路与运行日志。',
+  title: '运行治理中心 · SignalFoundry',
+  description: '统一治理 SignalFoundry 服务运行、工作空间交付、生成链路与运行日志。',
 };
 
 type Props = {

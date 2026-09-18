@@ -1,5 +1,5 @@
 [Unit]
-Description=QuantScope market data API
+Description=SignalFoundry market data API
 After=network-online.target
 Wants=network-online.target
 

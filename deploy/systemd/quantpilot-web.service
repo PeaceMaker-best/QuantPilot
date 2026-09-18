@@ -1,5 +1,5 @@
 [Unit]
-Description=QuantScope standalone web application
+Description=SignalFoundry standalone web application
 After=network-online.target
 Wants=network-online.target
 

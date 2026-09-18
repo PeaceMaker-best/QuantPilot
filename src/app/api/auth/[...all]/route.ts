@@ -14,7 +14,7 @@ const handlers = toNextJsHandler(auth);
 
 function disabledResponse() {
   return NextResponse.json(
-    { error: 'AUTH_DISABLED', message: 'QuantScope 登录能力当前未启用。' },
+    { error: 'AUTH_DISABLED', message: 'SignalFoundry 登录能力当前未启用。' },
     { status: 404 },
   );
 }

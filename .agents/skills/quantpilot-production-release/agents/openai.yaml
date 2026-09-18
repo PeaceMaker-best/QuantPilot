@@ -1,4 +1,4 @@
 interface:
-  display_name: "QuantScope Production Release"
-  short_description: "Safely release QuantScope without routine full data sync"
+  display_name: "SignalFoundry Production Release"
+  short_description: "Safely release SignalFoundry without routine full data sync"
   default_prompt: "Use $quantpilot-production-release to plan and execute a safe feature-focused production release."

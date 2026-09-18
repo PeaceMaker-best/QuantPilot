@@ -125,7 +125,7 @@ export async function publishQuantPipelineToolStart(params: {
           input: params.input,
         }
       : {}),
-    isQuantScopePipelineStep: true,
+    isSignalFoundryPipelineStep: true,
   };
   const message = await createMessage({
     projectId: params.projectId,
@@ -192,7 +192,7 @@ export async function publishQuantPipelineToolMessage(params: {
           output: stringifyQuantPipelineToolDetail(params.output),
         }
       : {}),
-    isQuantScopePipelineStep: true,
+    isSignalFoundryPipelineStep: true,
   };
 
   const message = await createMessage({

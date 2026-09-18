@@ -72,7 +72,7 @@
       ],
       "objective": "在本地覆盖、时效和字段完整性之间选择可审计的数据来源。",
       "invariants": [
-        "本地已有覆盖时优先本地数据，不绕过 QuantScope API。",
+        "本地已有覆盖时优先本地数据，不绕过 SignalFoundry API。",
         "每个数据集保留 source、endpoint、as_of、fetched_at 和质量状态。"
       ],
       "workflow": [
@@ -137,7 +137,7 @@
       "requiresTools": [
         "quant_api_get"
       ],
-      "objective": "通过 QuantScope 只读 API 获取任务所需的实时行情和历史序列。",
+      "objective": "通过 SignalFoundry 只读 API 获取任务所需的实时行情和历史序列。",
       "invariants": [
         "所有请求必须是 quant_api_get 允许的 GET 端点。",
         "bars 不超过声明 as_of；上游失败或样本不足须保留真实缺口。",
@@ -245,7 +245,7 @@
         "platform-ui"
       ],
       "requiresTools": [],
-      "objective": "设计 QuantScope 主平台界面，不负责生成工作空间金融看板。",
+      "objective": "设计 SignalFoundry 主平台界面，不负责生成工作空间金融看板。",
       "invariants": [
         "复用平台现有 UI primitives，并覆盖 loading、empty、error 和响应式状态。",
         "状态矩阵须有浏览器证据；切换对象或核验失败不得沿用旧成功状态。"

@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  createQuantScopeDataAgentRegistry,
+  createSignalFoundryDataAgentRegistry,
   getFinanceSkillCapabilityDescriptor,
   QUANTPILOT_AGENT_PROFILE,
 } from './agent-profile';
 
 describe('Quant finance Data Agent profile', () => {
   it('registers as a domain pack without teaching Data Agent core about finance', () => {
-    const resolved = createQuantScopeDataAgentRegistry()
+    const resolved = createSignalFoundryDataAgentRegistry()
       .resolveProfile(QUANTPILOT_AGENT_PROFILE.id);
 
     expect(resolved.defaultCapability.id).toBe('stock_diagnosis');

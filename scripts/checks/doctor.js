@@ -206,7 +206,7 @@ function checkCommand(name, command, args, options = {}) {
 }
 
 async function main() {
-  console.log(`\nQuantScope Doctor ${FULL_CHECKS ? '(full)' : '(quick)'}\n`);
+  console.log(`\nSignalFoundry Doctor ${FULL_CHECKS ? '(full)' : '(quick)'}\n`);
   const degradation = degradationConfig();
 
   const packageJson = readJson(path.join(ROOT, 'package.json'));

@@ -1,6 +1,6 @@
 # 用户、权限与会话管理
 
-QuantScope 支持项目级可配置登录。它默认保持 `disabled`，兼容原来的本地单用户开发方式；部署到共享环境时应切换为 `local`，由 PostgreSQL 保存用户、凭据、会话和登录限流状态。
+SignalFoundry 支持项目级可配置登录。它默认保持 `disabled`，兼容原来的本地单用户开发方式；部署到共享环境时应切换为 `local`，由 PostgreSQL 保存用户、凭据、会话和登录限流状态。
 
 ## 能力边界
 
@@ -8,7 +8,7 @@ QuantScope 支持项目级可配置登录。它默认保持 `disabled`，兼容�
 
 - Next.js 页面和 `/api/*` 接口；匿名页面请求跳转到 `/login`，匿名 API 请求返回结构化 `401`。
 - `/api/ws/*` WebSocket 握手；握手时再次查询数据库会话，不能只依赖页面已登录。
-- 非安全方法的 API 来源校验；浏览器请求必须同源，无 `Origin` 的可信自动化调用需携带 `X-QuantScope-Request: same-origin`。
+- 非安全方法的 API 来源校验；浏览器请求必须同源，无 `Origin` 的可信自动化调用需携带 `X-SignalFoundry-Request: same-origin`。
 - 账号或邮箱密码登录；本机开发提供 `admin / admin`，显式配置的正式密码最小 12 字符，公开注册默认关闭。
 - 数据库会话和数据库登录限流；登录默认每分钟最多 5 次尝试，会话默认 12 小时。
 - 平台角色 `admin/member`、账号 capability 与项目角色 `owner/editor/viewer` 分离；后端按默认拒绝原则校验页面、API 与 WebSocket，不能只依赖前端隐藏按钮。
@@ -57,7 +57,7 @@ npm run ensure:env -- --enable-auth
 ```bash
 QUANTPILOT_AUTH_ADMIN_EMAIL=admin@example.com
 QUANTPILOT_AUTH_ADMIN_PASSWORD=<至少-12-字符-的强密码>
-QUANTPILOT_AUTH_ADMIN_NAME=QuantScope 管理员
+QUANTPILOT_AUTH_ADMIN_NAME=SignalFoundry 管理员
 ```
 
 生产环境的 `BETTER_AUTH_URL` 与可信来源应使用实际 HTTPS 地址，同时设置 `QUANTPILOT_AUTH_SECURE_COOKIES=1`。随机密钥可用 `openssl rand -base64 32` 生成，不要把密钥或管理员密码提交到 Git。

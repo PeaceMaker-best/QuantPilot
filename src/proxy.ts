@@ -15,7 +15,7 @@ const PUBLIC_BRAND_ASSET_PATHS = new Set([
   '/icon.svg',
   '/manifest.webmanifest',
   '/quantpilot-mark.svg',
-  '/QuantScope_Icon.png',
+  '/SignalFoundry_Icon.png',
 ]);
 
 function isPublicBrandAssetPath(pathname: string): boolean {
@@ -65,7 +65,7 @@ export async function proxy(request: NextRequest) {
   if (!session) {
     if (pathname.startsWith('/api/')) {
       return NextResponse.json(
-        { error: 'AUTHENTICATION_REQUIRED', message: '请先登录 QuantScope。' },
+        { error: 'AUTHENTICATION_REQUIRED', message: '请先登录 SignalFoundry。' },
         { status: 401 },
       );
     }

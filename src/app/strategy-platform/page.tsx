@@ -3,7 +3,7 @@ import { getStrategyDashboardData } from '@/lib/quant/strategies';
 import StrategyPlatformClient from './StrategyPlatformClient';
 
 export const metadata: Metadata = {
-  title: '策略平台 · QuantScope',
+  title: '策略平台 · SignalFoundry',
 };
 
 export default async function StrategyPlatformPage() {

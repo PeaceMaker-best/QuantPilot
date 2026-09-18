@@ -32,7 +32,7 @@ import {
   writeWorkspaceJsonAtomic,
 } from '@/lib/data-agent';
 import {
-  createQuantScopeDataAgentRegistry,
+  createSignalFoundryDataAgentRegistry,
   QUANTPILOT_AGENT_PROFILE_ID,
 } from '@/lib/domains/finance/agent-profile';
 import {
@@ -596,7 +596,7 @@ export async function writeInitialRunPlan(params: {
         ? 'needs_clarification'
         : 'planned',
     capabilityId: capability.id,
-    composition: createQuantScopeDataAgentRegistry().resolveCapability(
+    composition: createSignalFoundryDataAgentRegistry().resolveCapability(
       QUANTPILOT_AGENT_PROFILE_ID,
       capability.id,
     ).composition,

@@ -1,5 +1,5 @@
 /**
- * Shared visual language for generated QuantScope dashboards.
+ * Shared visual language for generated SignalFoundry dashboards.
  *
  * Financial workbenches should read as one continuous analytical surface. The
  * selectors deliberately have more specificity than the legacy template CSS so
